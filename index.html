@@ -341,37 +341,30 @@
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]
         குறிப்பு: ans என்பது சரியான விடையின் Index எண்ணாக (0, 1, 2, அல்லது 3) மட்டுமே இருக்க வேண்டும்.`;
 
-        // Direct, Working endpoints array
-        const endpoints = [
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${apiKey}`
-        ];
+        // 100% Stable API Endpoint (gemini-1.5-flash)
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
 
         let success = false;
         let lastError = "";
 
-        for (let url of endpoints) {
-            try {
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                
-                const data = await res.json();
-                if(res.ok && data.candidates) {
-                    let text = data.candidates[0].content.parts[0].text;
-                    text = text.replace(/```json|```/g, "").trim();
-                    questions = JSON.parse(text);
-                    success = true;
-                    break;
-                } else if(data.error) {
-                    lastError = data.error.message;
-                }
-            } catch(e) { 
-                lastError = e.message;
-                continue; 
+        try {
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            
+            const data = await res.json();
+            if(res.ok && data.candidates) {
+                let text = data.candidates[0].content.parts[0].text;
+                text = text.replace(/```json|```/g, "").trim();
+                questions = JSON.parse(text);
+                success = true;
+            } else if(data.error) {
+                lastError = data.error.message;
             }
+        } catch(e) { 
+            lastError = e.message;
         }
 
         document.getElementById('loadingCard').style.display = 'none';

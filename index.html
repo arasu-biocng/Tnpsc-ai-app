@@ -328,7 +328,6 @@
         const topic = document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
         const count = document.getElementById('questionCount').value;
 
-        // Loading Card Updates
         document.getElementById('lblSubject').innerText = subject;
         document.getElementById('lblTopic').innerText = topic;
         document.getElementById('lblCount').innerText = `${count} வினாக்கள்`;
@@ -341,43 +340,56 @@
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]
         குறிப்பு: ans என்பது சரியான விடையின் Index எண்ணாக (0, 1, 2, அல்லது 3) மட்டுமே இருக்க வேண்டும்.`;
 
-        // Strictly Flash models only to avoid Pro model 404 errors
-        const endpoints = [
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-            `https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=${apiKey}`
-        ];
-
         let success = false;
         let lastError = "";
+        let questionsData = null;
 
-        for (let url of endpoints) {
-            try {
+        try {
+            // Step 1: Automatically fetch available models from Google Server using the user's API Key
+            const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+            const listData = await listRes.json();
+
+            let targetModels = [];
+            if (listData.models) {
+                // Filter models that support generateContent method
+                targetModels = listData.models
+                    .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"))
+                    .map(m => m.name.replace(/^models\//, ''));
+            }
+
+            // Fallback default models if listing fails
+            if (targetModels.length === 0) {
+                targetModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
+            }
+
+            // Step 2: Try generating content with the available models dynamically
+            for (let modelName of targetModels) {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
                 const res = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
                 });
-                
+
                 const data = await res.json();
-                if(res.ok && data.candidates) {
+                if (res.ok && data.candidates) {
                     let text = data.candidates[0].content.parts[0].text;
                     text = text.replace(/```json|```/g, "").trim();
-                    questions = JSON.parse(text);
+                    questionsData = JSON.parse(text);
                     success = true;
                     break;
-                } else if(data.error) {
+                } else if (data.error) {
                     lastError = data.error.message;
                 }
-            } catch(e) { 
-                lastError = e.message;
-                continue; 
             }
+        } catch (e) {
+            lastError = e.message;
         }
 
         document.getElementById('loadingCard').style.display = 'none';
 
-        if(success && questions.length > 0) {
+        if (success && questionsData && questionsData.length > 0) {
+            questions = questionsData;
             currentQ = 0;
             userAnswers = [];
             document.getElementById('quizTab').style.display = 'block';
@@ -459,7 +471,6 @@
 
         document.getElementById('scoreText').innerText = `உங்கள் மதிப்பெண்: ${score} / ${questions.length}`;
 
-        // Save History
         let history = JSON.parse(localStorage.getItem('test_history') || "[]");
         history.unshift({
             date: new Date().toLocaleDateString('ta-IN'),

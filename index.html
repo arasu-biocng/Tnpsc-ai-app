@@ -103,14 +103,19 @@
             </select>
         </div>
         <div class="form-group">
-            <label>2. பாடம் / யூனிட்:</label>
+            <label>2. பாடம் / யூனிட் (Full Syllabus):</label>
             <select id="subjectSelect" class="form-control" onchange="updateTopics()">
                 <option value="General Tamil">பொதுத் தமிழ் (General Tamil)</option>
-                <option value="Unit 8">Unit 8: தமிழ்நாடு வரலாறு & பண்பாடு</option>
+                <option value="Unit 1">Unit 1: பொது அறிவியல் (General Science)</option>
+                <option value="Unit 2">Unit 2: நடப்பு நிகழ்வுகள் (Current Affairs)</option>
+                <option value="Unit 3">Unit 3: இந்தியாவின் புவியியல் (Geography)</option>
+                <option value="Unit 4">Unit 4: இந்தியாவின் வரலாறும் பண்பாடும்</option>
+                <option value="Unit 5">Unit 5: இந்திய ஆட்சியியல் (Polity)</option>
+                <option value="Unit 6">Unit 6: இந்திய பொருளாதாரம் (Economy)</option>
+                <option value="Unit 7">Unit 7: இந்திய தேசிய இயக்கம் (INM)</option>
+                <option value="Unit 8">Unit 8: தமிழ்நாட்டின் வரலாறு & பண்பாடு</option>
                 <option value="Unit 9">Unit 9: தமிழகத்தில் வளர்ச்சி நிர்வாகம்</option>
-                <option value="Polity">இந்திய ஆட்சியியல் (Polity)</option>
-                <option value="History">இந்திய வரலாறு & பண்பாடு</option>
-                <option value="Aptitude">திறனறிவும் மனக்கணக்கு நுண்ணறிவும்</option>
+                <option value="Unit 10">Unit 10: திறனறிவும் மனக்கணக்கு நுண்ணறிவும்</option>
             </select>
         </div>
         <div class="form-group">
@@ -127,7 +132,7 @@
                 <option value="10">10 வினாக்கள் (Quick Test)</option>
                 <option value="20">20 வினாக்கள் (Standard)</option>
                 <option value="30">30 வினாக்கள் (Deep Level)</option>
-                <option value="40" selected>30 வினாக்கள் (Full Test)</option>
+                <option value="40" selected>40 வினாக்கள் (Full Test)</option>
             </select>
         </div>
         <button class="btn-primary" onclick="generateQuestions()"><i class="fa-solid fa-wand-magic-sparkles"></i> தேர்வைத் தொடங்கு</button>
@@ -183,11 +188,16 @@
 <script>
     const syllabus = {
         "General Tamil": ["இலக்கணம் - பொருத்துதல், நூல் நூலாசிரியர்", "இலக்கியம் - திருக்குறள், எட்டுத்தொகை", "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"],
+        "Unit 1": ["இயற்பியல் - அளவீடுகள் & விசை", "வேதியியல் - அமிலங்கள் & காரங்ள்", "உயிரியல் - மனித உடலியங்கியல்"],
+        "Unit 2": ["தேசிய நிகழ்வுகள்", "தமிழ்நாடு நடப்பு நிகழ்வுகள்", "விருதுகள் & விளையாட்டுக்கள்"],
+        "Unit 3": ["அமைவிடம் & இயற்கை அமைவுகள்", "பருவமழை, மழைப்பொழிவு & காலநிலை", "ஆறுகள் & நீர் வளங்கள்"],
+        "Unit 4": ["சிந்துவெளி நாகரிகம்", "குப்தர்கள், டெல்லி சுல்தான்கள் & முகலாயர்கள்", "தென்னிந்திய வரலாறு & பண்பாடு"],
+        "Unit 5": ["இந்திய அரசியலமைப்பு - முகப்புரை", "அடிப்படை உரிமைகள் & கடமைகள்", "பஞ்சாயத்து ராஜ் & உள்ளாட்சி"],
+        "Unit 6": ["இந்திய பொருளாதாரத்தின் இயல்புகள்", "ஐந்தாண்டுத் திட்டங்கள் & நிதி ஆயோக்", "ஜிஎஸ்டி (GST) & வரி அமைப்பு"],
+        "Unit 7": ["தேசிய மறுமலர்ச்சி & தொடக்ககால எழுச்சிகள்", "இந்திய தேசிய காங்கிரஸ் & தலைவர்கள்", "தமிழ்நாட்டின் விடுதலைப் போராட்ட தலைவர்கள்"],
         "Unit 8": ["சங்க காலம் முதல் தமிழ் இலக்கியம்", "விடுதலைப் போராட்டத்தில் தமிழ்நாட்டின் பங்கு", "சேர, சோழ, பாண்டியர் வரலாறு"],
-        "Unit 9": ["மனிதவள மேம்பாட்டுக் குறியீடுகள் (HDI)", "தமிழக அரசின் நலத்திட்டங்கள் & சமூக நீதி"],
-        "Polity": ["இந்திய அரசியலமைப்பு - முகப்புரை", "அடிப்படை உரிமைகள் & கடமைகள்", "பஞ்சாயத்து ராஜ் & உள்ளாட்சி"],
-        "History": ["சிந்துவெளி நாகரிகம்", "குப்தர்கள், டெல்லி சுல்தான்கள் & முகலாயர்கள்"],
-        "Aptitude": ["மீ.பொ.வ (HCF) & மீ.சி.ம (LCM)", "தனிவட்டி & கூட்டுவட்டி", "விகிதம் & சமவிகிதம்"]
+        "Unit 9": ["மனிதவள மேம்பாட்டுக் குறியீடுகள் (HDI)", "தமிழக அரசின் நலத்திட்டங்கள் & சமூக நீதி", "மின்-ஆளுமை (e-Governance)"],
+        "Unit 10": ["மீ.பொ.வ (HCF) & மீ.စီ.ம (LCM)", "தனிவட்டி & கூட்டுவட்டி", "விகிதம் & சமவிகிதம்"]
     };
 
     let questions = [];
@@ -253,8 +263,8 @@
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]
         குறிப்பு: ans என்பது சரியான விடையின் Index எண்ணாக (0, 1, 2, அல்லது 3) மட்டுமே இருக்க வேண்டும்.`;
 
-        // Official Stable Gemini Models
-        const models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"];
+        // Working Models for Gemini API v1beta
+        const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
         let success = false;
         let lastError = "";
 
@@ -366,7 +376,7 @@
 
         document.getElementById('scoreText').innerText = `உங்கள் மதிப்பெண்: ${score} / ${questions.length}`;
 
-        // Save History to LocalStorage
+        // Save History
         let history = JSON.parse(localStorage.getItem('test_history') || "[]");
         history.unshift({
             date: new Date().toLocaleDateString('ta-IN'),
@@ -401,7 +411,7 @@
     }
 
     function askAiHelp(qText) {
-        showModal("AI உதவி", `"${qText}" குறித்த கூடுதல் சந்தேகங்கள் மற்றும் توضیحات അടുത്ത புதுப்பிப்பில் சேர்க்கப்படும்.`);
+        showModal("AI உதவி", `"${qText}" குறித்த கூடுதல் சந்தேக விளக்கங்கள் அடுத்த பதிப்பில் சேர்க்கப்படும்.`);
     }
 
     function showModal(title, desc) {

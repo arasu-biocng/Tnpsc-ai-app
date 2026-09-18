@@ -32,7 +32,7 @@
         .info-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; backdrop-filter: blur(10px); }
         .info-card h3 { font-size: 15px; color: var(--accent-color); margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--card-border); padding-bottom: 6px; }
 
-        /* Brain Loading Card (Image 3 Style) */
+        /* Brain Loading Card */
         .loading-card {
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -101,7 +101,7 @@
             <div class="streak-badge"><i class="fa-solid fa-fire"></i> 0 Days Streak</div>
         </header>
 
-        <!-- Separate Key Settings Option -->
+        <!-- Separate API Key Settings -->
         <div class="info-card">
             <h3>
                 <span><i class="fa-solid fa-key"></i> API சாவி அமைப்புகள்</span>
@@ -116,7 +116,7 @@
             </div>
         </div>
 
-        <!-- Brain Loading Section (Image 3 Style) -->
+        <!-- Brain Loading Card -->
         <div class="loading-card" id="loadingCard">
             <div class="ai-pulse-ring">
                 <div class="pulse"></div>
@@ -129,8 +129,9 @@
         <div class="info-card" id="mainFormCard">
             <h3><span><i class="fa-solid fa-book-bookmark"></i> பாடத்திட்டம் (Syllabus)</span></h3>
             
+            <!-- Exam Level -->
             <div class="form-group">
-                <label>1. தேர்வு வகை:</label>
+                <label>1. தேர்வு வகை (Exam Level):</label>
                 <select id="examSelect" class="form-control">
                     <option value="Group 4 / VAO">TNPSC Group 4 / VAO</option>
                     <option value="Group 2 / 2A">TNPSC Group 2 / 2A</option>
@@ -138,44 +139,54 @@
                 </select>
             </div>
 
+            <!-- Subject / Unit -->
             <div class="form-group">
-                <label>2. பாடம் / யூனிட்:</label>
+                <label>2. பாடம் / யூனிட் (Subject / Unit):</label>
                 <select id="subjectSelect" class="form-control" onchange="updateTopics()">
                     <option value="General Tamil">பொதுத் தமிழ் (General Tamil)</option>
-                    <option value="Unit 8">Unit 8: தமிழ்நாட்டின் வரலாறு & பண்பாடு</option>
-                    <option value="Unit 9">Unit 9: தமிழகத்தில் வளர்ச்சி நிர்வாகம்</option>
-                    <option value="History">இந்திய வரலாறு & பண்பாடு</option>
-                    <option value="Polity">இந்திய ஆட்சியியல் (Polity)</option>
-                    <option value="Aptitude">திறனறிவும் மனக்கணக்கு நுண்ணறிவும்</option>
+                    <option value="Unit 8">Unit 8: தமிழ்நாட்டின் வரலாறு, பண்பாடு & சமூக இயக்கங்கள்</option>
+                    <option value="Unit 9">Unit 9: தமிழகத்தில் வளர்ச்சி நிர்வாகம் (Development Admin)</option>
+                    <option value="History">இந்திய வரலாறு & பண்பாடு (History & Culture)</option>
+                    <option value="Polity">இந்திய ஆட்சியியல் (Indian Polity)</option>
+                    <option value="Geography">இந்திய புவியியல் (Geography)</option>
+                    <option value="Economy">இந்திய பொருளாதாரம் (Economy)</option>
+                    <option value="INM">இந்திய தேசிய இயக்கம் (INM)</option>
+                    <option value="Science">பொது அறிவியல் (General Science)</option>
+                    <option value="Aptitude">திறனறிவும் மனக்கணக்கு நுண்ணறிவும் (Aptitude)</option>
                 </select>
             </div>
 
+            <!-- Topic Selection -->
             <div class="form-group">
-                <label>3. தலைப்பு:</label>
+                <label>3. தலைப்பு (Sub-Topic):</label>
                 <select id="topicSelect" class="form-control"></select>
             </div>
 
+            <!-- Custom Topic Input -->
             <div class="form-group">
-                <label>4. சொந்தத் தலைப்பு (விருப்பப்பட்டால்):</label>
-                <input type="text" id="customTopic" class="form-control" placeholder="வேறு தலைப்பு இருந்தால் தட்டச்சு செய்யவும்..." />
+                <label>4. சொந்தத் தலைப்பு (விருப்பப்பட்டால் Type செய்யவும்):</label>
+                <input type="text" id="customTopic" class="form-control" placeholder="மேலே உள்ள பட்டியல் தவிர வேறு தலைப்பு வேண்டுமெனில்..." />
             </div>
 
+            <!-- Question Count -->
             <div class="form-group">
                 <label>5. வினாக்கள் எண்ணிக்கை:</label>
                 <select id="questionCount" class="form-control">
-                    <option value="20">20 வினாக்கள்</option>
-                    <option value="30" selected>30 வினாக்கள்</option>
-                    <option value="40">40 வினாக்கள்</option>
+                    <option value="5">5 வினாக்கள் (Quick Test)</option>
+                    <option value="20">20 வினாக்கள் (Standard)</option>
+                    <option value="30">30 வினாக்கள் (Deep Level Test)</option>
+                    <option value="40" selected>40 வினாக்கள் (Full Test)</option>
                 </select>
             </div>
         </div>
 
+        <!-- Start Button -->
         <button class="btn-primary" id="startBtn" onclick="generateQuestions()">
             <i class="fa-solid fa-wand-magic-sparkles"></i> AI தேர்வை உருவாக்கு
         </button>
     </div>
 
-    <!-- Modal Popup for Errors -->
+    <!-- Modal Popup for Notifications -->
     <div class="modal-overlay" id="customModal">
         <div class="modal-box">
             <h3 id="modalTitle" style="color: var(--accent-color); margin-bottom:10px;">அறிவிப்பு</h3>
@@ -185,13 +196,71 @@
     </div>
 
     <script>
+        // TNPSC Full Syllabus Data
         const syllabusData = {
-            "General Tamil": ["இலக்கணம் - பொருத்துதல்", "இலக்கியம் - திருக்குறள்", "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"],
-            "Unit 8": ["சங்க கால இலக்கியம்", "விடுதலைப் போராட்டத்தில் தமிழ்நாட்டின் பங்கு", "சேர, சோழ, பாண்டியர் வரலாறு"],
-            "Unit 9": ["மனிதவள மேம்பாட்டுக் குறியீடுகள்", "தமிழக அரசின் நலத்திட்டங்கள்"],
-            "History": ["சிந்துவெளி நாகரிகம்", "குப்தர்கள் & முகலாயர்கள்"],
-            "Polity": ["இந்திய அரசியலமைப்பு", "அடிப்படை உரிமைகள்"],
-            "Aptitude": ["மீ.பொ.வ & மீ.சி.ம", "தனிவட்டி & கூட்டுவட்டி"]
+            "General Tamil": [
+                "இலக்கணம் - பொருத்துதல், புகழ் பெற்ற நூல் நூலாசிரியர்",
+                "இலக்கணம் - பிரித்தெழுதுக, சேர்த்தெழுதுக",
+                "இலக்கியம் - திருக்குறள், எட்டுத்தொகை, பத்துப்பாட்டு",
+                "இலக்கியம் - ஐம்பெருங்காப்பியங்கள், ஐஞ்சிறுங்காப்பியங்கள்",
+                "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"
+            ],
+            "Unit 8": [
+                "சங்க காலம் முதல் இக்காலம் வரையிலான தமிழ் இலக்கியம்",
+                "திருக்குறள் (அறத்துப்பால், பொருட்பால், இன்பத்துப்பால்)",
+                "விடுதலைப் போராட்டத்தில் தமிழ்நாட்டின் பங்கு",
+                "19 மற்றும் 20-ஆம் நூற்றாண்டின் சமூக-அரசியல் இயக்கங்கள்",
+                "சேர, சோழ, பாண்டியர் வரலாறு & தொல்லியல் கண்டுபிடிப்புகள்"
+            ],
+            "Unit 9": [
+                "தமிழ்நாட்டின் மனிதவள மேம்பாட்டுக் குறியீடுகள் (HDI)",
+                "தமிழக அரசின் நலத்திட்டங்கள் & சமூக நீதி",
+                "தமிழ்நாட்டின் பொருளாதாரப் போக்குகள் & மின்-ஆளுமை (e-Governance)",
+                "தமிழகத்தின் கல்வி மற்றும் சுகாதார முறைகள்"
+            ],
+            "History": [
+                "சிந்துவெளி நாகரிகம் (Indus Valley)",
+                "குப்தர்கள், டெல்லி சுல்தான்கள், முகலாயர்கள்",
+                "விஜயநகர மற்றும் பாமினி அரசுகள்",
+                "மராத்தியர்கள் & தென்னிந்திய வரலாறு"
+            ],
+            "Polity": [
+                "இந்திய அரசியலமைப்பு - முகப்புரை & சிறப்பியல்புகள்",
+                "அடிப்படை உரிமைகள் & அடிப்படை கடமைகள்",
+                "மத்திய அரசு, மாநில அரசு & உள்ளாட்சி அமைப்புகள் (பஞ்சாயத்து ராஜ்)",
+                "கூட்டாட்சியின் அடிப்படைத் தன்மைகள் & தேர்தல் ஆணையம்"
+            ],
+            "Geography": [
+                "அமைவிடம் - இயற்கை அமைவுகள் & பருவமழை",
+                "நீர் வளங்கள், ஆறுகள் & மண் வகைகள்",
+                "காடுகள் & வன உயிரினங்கள்",
+                "போக்குவரத்து & தகவல் தொடர்பு"
+            ],
+            "Economy": [
+                "இந்திய பொருளாதாரத்தின் இயல்புகள் & ஐந்தாண்டுத் திட்டங்கள்",
+                "நிதி ஆயோக் (NITI Aayog) & ரிசர்வ் வங்கி (RBI)",
+                "ஜிஎஸ்டி (GST) & வரி அமைப்பு",
+                "வேளாண்மை & ஊரக வளர்ச்சி திட்டங்கள்"
+            ],
+            "INM": [
+                "தேசிய மறுமலர்ச்சி & தொடக்ககால எழுச்சிகள்",
+                "இந்திய தேசிய காங்கிரஸ் (INC) & தலைவர்கள்",
+                "காந்திய காலகட்டம் & பகத் சிங், நேதாஜி பங்கு",
+                "தமிழ்நாட்டின் விடுதலைப் போராட்ட தலைவர்கள் (பாரதியார், வ.உ.சி, ராஜாஜி)"
+            ],
+            "Science": [
+                "இயற்பியல் - அளவீடுகள், விசை, இயக்கம், மின்சாரவியல்",
+                "வேதியியல் - அமிலங்கள், காரங்களும, உப்புக்கள், தனிமங்கள்",
+                "உயிரியல் - மனித உடலியங்கியல், நோய்கள் & ஊட்டச்சத்து",
+                "சுற்றுச்சூழல் & சூழலியல்"
+            ],
+            "Aptitude": [
+                "மீ.பொ.வ (HCF) மற்றும் மீ.சி.ம (LCM)",
+                "விகிதம் மற்றும் சமவிகிதம் (Ratio & Proportion)",
+                "தனிவட்டி மற்றும் கூட்டுவட்டி (Simple & Compound Interest)",
+                "பரப்பளவு மற்றும் சுற்றளவு (Area & Volume)",
+                "எழுத்து மற்றும் எண் காரணவியல் (Reasoning)"
+            ]
         };
 
         function updateTopics() {
@@ -200,7 +269,8 @@
             topicSelect.innerHTML = '';
             (syllabusData[subject] || []).forEach(t => {
                 const opt = document.createElement('option');
-                opt.value = t; opt.textContent = t;
+                opt.value = t; 
+                opt.textContent = t;
                 topicSelect.appendChild(opt);
             });
         }
@@ -212,17 +282,21 @@
 
         function saveApiKey() {
             const key = document.getElementById('apiKeyInput').value.trim();
-            if(key) {
+            if (key) {
                 localStorage.setItem('gemini_api_key', key);
-                alert("API Key சேமிக்கப்பட்டது!");
+                showModal("வெற்றி!", "API Key வெற்றிகரமாக சேமிக்கப்பட்டது.");
                 toggleKeySettings();
+            } else {
+                showModal("பிழை", "தயவுசெய்து செல்லுபடியாகும் API Key-ஐ உள்ளிடவும்.");
             }
         }
 
         window.onload = function() {
             updateTopics();
             const savedKey = localStorage.getItem('gemini_api_key');
-            if(savedKey) document.getElementById('apiKeyInput').value = savedKey;
+            if (savedKey) {
+                document.getElementById('apiKeyInput').value = savedKey;
+            }
         };
 
         async function generateQuestions() {
@@ -232,7 +306,6 @@
                 return;
             }
 
-            // Hide form and show Brain Loading Card (Image 3)
             document.getElementById('loadingCard').style.display = 'flex';
             document.getElementById('mainFormCard').style.display = 'none';
 
@@ -241,10 +314,27 @@
             const topic = document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
             const count = document.getElementById('questionCount').value;
 
-            const deepPrompt = `TNPSC ${exam} - ${subject} (${topic}) தலைப்பில் ${count} வினாக்களை உருவாக்கவும்.`;
+            const deepPrompt = `
+                நீ ஒரு TNPSC தேர்வு வல்லுநர்.
+                தேர்வு: ${exam}
+                பாடம்: ${subject}
+                தலைப்பு: ${topic}
+                
+                கண்டிப்பான விதிகள்:
+                1. தமிழ்நாடு அரசு 6 முதல் 12-ஆம் வகுப்பு பாடநூல்களின் அடிப்படையில் ${count} ஆழமான (Deep Level) வினாக்களை உருவாக்கவும்.
+                2. கூற்று-காரணம் (Statement & Reason) மற்றும் பொருத்துக (Match) வினாக்களைச் சேர்க்கவும்.
+                3. ஒவ்வொரு கேள்விக்கும் 4 விருப்பங்கள் (A, B, C, D) மற்றும் ஆழமான விளக்கம் (Detailed Explanation) இருக்க வேண்டும்.
+                4. JSON வடிவத்தில் மட்டுமே பதிலளிக்கவும்.
+            `;
 
-            // Auto Fallback between models to prevent "High Demand" errors (Image 2 Fix)
-            const models = ["gemini-1.5-flash", "gemini-1.5-pro"];
+            // Fallback list of Gemini models to prevent errors
+            const models = [
+                "gemini-2.5-flash",
+                "gemini-2.0-flash",
+                "gemini-1.5-flash",
+                "gemini-1.5-pro"
+            ];
+            
             let success = false;
 
             for (let model of models) {
@@ -258,7 +348,7 @@
                     const data = await response.json();
                     if (!data.error) {
                         success = true;
-                        showModal("வெற்றி!", "வினாக்கள் உருவாக்கப்பட்டுவிட்டன.");
+                        showModal("வெற்றி!", "வினாக்கள் வெற்றிகரமாக உருவாக்கப்பட்டுவிட்டன.");
                         break;
                     }
                 } catch (e) {
@@ -270,7 +360,7 @@
             document.getElementById('mainFormCard').style.display = 'block';
 
             if (!success) {
-                showModal("பிழை ஏற்பட்டது", "சர்வர் இணைப்பில் அதிக சுமை உள்ளது. சிறிது நேரம் கழித்து முயற்சிக்கவும்.");
+                showModal("இணைப்புத் தோல்வி", "உங்கள் API Key சரியாக உள்ளதா எனச் சரிபார்க்கவும் அல்லது இணைய இணைப்பைச் சோதிக்கவும்.");
             }
         }
 

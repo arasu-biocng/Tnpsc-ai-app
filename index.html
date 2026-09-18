@@ -37,12 +37,10 @@
         label { display: block; font-size: 13px; color: var(--text-sub); margin-bottom: 5px; font-weight: 600; }
         .form-control { width: 100%; padding: 10px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: var(--text); outline: none; font-size: 14px; }
 
-        /* Navigation Tabs */
         .nav-tabs { display: flex; gap: 8px; }
         .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-sub); border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; font-weight: 600; }
         .tab-btn.active { background: var(--accent); color: #000; font-weight: 700; }
 
-        /* Brain Pulse Loading Animation */
         .brain-loading-card {
             display: none;
             flex-direction: column;
@@ -64,11 +62,7 @@
             align-items: center;
         }
 
-        .ai-brain-pulse i {
-            font-size: 34px;
-            color: var(--accent);
-            z-index: 2;
-        }
+        .ai-brain-pulse i { font-size: 34px; color: var(--accent); z-index: 2; }
 
         .brain-pulse-ring {
             position: absolute;
@@ -94,28 +88,19 @@
             border: 1px solid var(--border);
         }
 
-        .loading-details-row {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 6px;
-        }
-
+        .loading-details-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
         .loading-details-row:last-child { margin-bottom: 0; }
 
-        /* Quiz Interface */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .timer { color: var(--warning); font-size: 15px; }
         .option-btn { width: 100%; padding: 12px; text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
         .option-btn:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
         
-        /* Review Section */
         .q-review { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--border); }
         .correct-border { border-left-color: var(--success); }
         .wrong-border { border-left-color: var(--danger); }
         .explanation { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; }
-        .ai-help-btn { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid var(--accent); padding: 5px 10px; border-radius: 6px; font-size: 11px; margin-top: 8px; cursor: pointer; font-weight: 600; }
-
-        /* Modal Popup */
+        
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-box { background: #1e293b; border: 1px solid var(--border); border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; text-align: center; }
     </style>
@@ -131,7 +116,6 @@
         <button class="btn-sm" onclick="toggleKeySettings()"><i class="fa-solid fa-key"></i> API சாவி</button>
     </header>
 
-    <!-- Key Section -->
     <div id="keySection" class="card" style="display:none;">
         <div class="form-group">
             <label>Gemini API Key உள்ளிடவும்:</label>
@@ -140,14 +124,12 @@
         <button class="btn-primary" onclick="saveApiKey()">சேமி</button>
     </div>
 
-    <!-- Navigation Tabs -->
     <div class="nav-tabs">
         <button class="tab-btn active" id="btn-tab-create" onclick="switchTab('create')">தேர்வு உருவாக்கு</button>
         <button class="tab-btn" id="btn-tab-history" onclick="switchTab('history')">தேர்வு வரலாறு</button>
         <button class="tab-btn" id="btn-tab-weakness" onclick="switchTab('weakness')">பலவீனமான பகுதிகள்</button>
     </div>
 
-    <!-- Create Test Tab -->
     <div id="createTab" class="card">
         <div class="form-group">
             <label>1. தேர்வு வகை:</label>
@@ -184,16 +166,14 @@
         <div class="form-group">
             <label>5. வினாக்கள் எண்ணிக்கை:</label>
             <select id="questionCount" class="form-control">
-                <option value="10">10 வினாக்கள் (Quick Test)</option>
-                <option value="20">20 வினாக்கள் (Standard)</option>
-                <option value="30">30 வினாக்கள் (Deep Level)</option>
-                <option value="40" selected>40 வினாக்கள் (Full Test)</option>
+                <option value="20">20 வினாக்கள் (Quick Test)</option>
+                <option value="30" selected>30 வினாக்கள் (Standard)</option>
+                <option value="40">40 வினாக்கள் (Deep Level)</option>
             </select>
         </div>
         <button class="btn-primary" onclick="generateQuestions()"><i class="fa-solid fa-wand-magic-sparkles"></i> தேர்வைத் தொடங்கு</button>
     </div>
 
-    <!-- Brain Pulse Loading Animation -->
     <div id="loadingCard" class="brain-loading-card">
         <div class="ai-brain-pulse">
             <div class="brain-pulse-ring"></div>
@@ -217,7 +197,6 @@
         </div>
     </div>
 
-    <!-- Quiz Area -->
     <div id="quizTab" class="card" style="display:none;">
         <div class="quiz-header">
             <span id="qProgress">கேள்வி 1/10</span>
@@ -227,7 +206,6 @@
         <div id="optionsContainer"></div>
     </div>
 
-    <!-- Result & Detailed Explanation Tab -->
     <div id="resultTab" class="card" style="display:none;">
         <h3 style="color:var(--accent);">தேர்வு முடிவுகள்</h3>
         <p id="scoreText" style="font-size:18px; font-weight:bold; margin:10px 0;"></p>
@@ -236,20 +214,17 @@
         <button class="btn-primary" onclick="switchTab('create')" style="margin-top:10px;">புதிய தேர்வு எழுது</button>
     </div>
 
-    <!-- Test History Tab -->
     <div id="historyTab" class="card" style="display:none;">
         <h3>நாள் வாரியான தேர்வு வரலாறு</h3>
         <div id="historyList" style="margin-top:12px; font-size:13px; color:var(--text-sub);">தரவுகள் இல்லை.</div>
     </div>
 
-    <!-- Weak Topics Notification Tab -->
     <div id="weaknessTab" class="card" style="display:none;">
         <h3>கவனிக்க வேண்டிய பலவீனமான தலைப்புகள்</h3>
         <div id="weaknessList" style="margin-top:12px; font-size:13px; color:var(--text-sub);">தகவல்கள் இல்லை.</div>
     </div>
 </div>
 
-<!-- Modal Popup -->
 <div class="modal-overlay" id="customModal">
     <div class="modal-box">
         <h3 id="modalTitle" style="color: var(--accent); margin-bottom:10px;">அறிவிப்பு</h3>
@@ -261,7 +236,7 @@
 <script>
     const syllabus = {
         "General Tamil": ["இலக்கணம் - பொருத்துதல், நூல் நூலாசிரியர்", "இலக்கியம் - திருக்குறள், எட்டுத்தொகை", "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"],
-        "Unit 1": ["இயற்பியல் - அளவீடுகள் & விசை", "வேதியியல் - அமிலங்கள் & காரங்ள்", "உயிரியல் - மனித உடலியங்கியல்"],
+        "Unit 1": ["இயற்பியல் - அளவீடுகள் & விசை", "வேதியியல் - அமிலங்கள் & காரங்கள்", "உயிரியல் - மனித உடலியங்கியல்"],
         "Unit 2": ["தேசிய நிகழ்வுகள்", "தமிழ்நாடு நடப்பு நிகழ்வுகள்", "விருதுகள் & விளையாட்டுக்கள்"],
         "Unit 3": ["அமைவிடம் & இயற்கை அமைவுகள்", "பருவமழை, மழைப்பொழிவு & காலநிலை", "ஆறுகள் & நீர் வளங்கள்"],
         "Unit 4": ["சிந்துவெளி நாகரிகம்", "குப்தர்கள், டெல்லி சுல்தான்கள் & முகலாயர்கள்", "தென்னிந்திய வரலாறு & பண்பாடு"],
@@ -336,34 +311,17 @@
         document.getElementById('loadingCard').style.display = 'flex';
 
         const prompt = `TNPSC ${exam} - ${subject} (${topic}) தலைப்பில் ${count} வினாக்களை உருவாக்கவும். 
-        கண்டிப்பாக JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
-        [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]
-        குறிப்பு: ans என்பது சரியான விடையின் Index எண்ணாக (0, 1, 2, அல்லது 3) மட்டுமே இருக்க வேண்டும்.`;
+        கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும், வேறு எந்த வார்த்தைகளும் இருக்கக் கூடாது:
+        [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]`;
 
         let success = false;
         let lastError = "";
         let questionsData = null;
 
-        try {
-            // Step 1: Automatically fetch available models from Google Server using the user's API Key
-            const listRes = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
-            const listData = await listRes.json();
+        const modelsToTry = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
 
-            let targetModels = [];
-            if (listData.models) {
-                // Filter models that support generateContent method
-                targetModels = listData.models
-                    .filter(m => m.supportedGenerationMethods && m.supportedGenerationMethods.includes("generateContent"))
-                    .map(m => m.name.replace(/^models\//, ''));
-            }
-
-            // Fallback default models if listing fails
-            if (targetModels.length === 0) {
-                targetModels = ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-1.5-pro"];
-            }
-
-            // Step 2: Try generating content with the available models dynamically
-            for (let modelName of targetModels) {
+        for (let modelName of modelsToTry) {
+            try {
                 const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
                 const res = await fetch(url, {
                     method: 'POST',
@@ -372,18 +330,26 @@
                 });
 
                 const data = await res.json();
-                if (res.ok && data.candidates) {
+                if (res.ok && data.candidates && data.candidates[0].content) {
                     let text = data.candidates[0].content.parts[0].text;
-                    text = text.replace(/```json|```/g, "").trim();
-                    questionsData = JSON.parse(text);
-                    success = true;
-                    break;
+                    
+                    // Clean text to extract pure JSON safely
+                    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+                    const firstBracket = text.indexOf('[');
+                    const lastBracket = text.lastIndexOf(']');
+                    
+                    if (firstBracket !== -1 && lastBracket !== -1) {
+                        text = text.substring(firstBracket, lastBracket + 1);
+                        questionsData = JSON.parse(text);
+                        success = true;
+                        break;
+                    }
                 } else if (data.error) {
                     lastError = data.error.message;
                 }
+            } catch (e) {
+                lastError = e.message;
             }
-        } catch (e) {
-            lastError = e.message;
         }
 
         document.getElementById('loadingCard').style.display = 'none';
@@ -460,11 +426,10 @@
             div.innerHTML = `
                 <div><strong>Q${i+1}: ${q.q}</strong></div>
                 <div style="font-size:13px; margin-top:6px;">
-                    உங்கள் விடை: <span style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'}; font-weight:bold;">${userAns >= 0 ? q.options[userAns] : 'நேரம் முடிந்தது (பதிலளிக்கவில்லை)'}</span><br>
+                    உங்கள் விடை: <span style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'}; font-weight:bold;">${userAns >= 0 ? q.options[userAns] : 'நேரம் முடிந்தது'}</span><br>
                     சரியான விடை: <span style="color:var(--success); font-weight:bold;">${q.options[q.ans]}</span>
                 </div>
                 <div class="explanation">💡 <strong>விளக்கம்:</strong> ${q.exp}</div>
-                <button class="ai-help-btn" onclick="askAiHelp('${q.q.replace(/'/g, "\\'")}')">🤖 Ask AI Help</button>
             `;
             reviewContainer.appendChild(div);
         });
@@ -472,10 +437,7 @@
         document.getElementById('scoreText').innerText = `உங்கள் மதிப்பெண்: ${score} / ${questions.length}`;
 
         let history = JSON.parse(localStorage.getItem('test_history') || "[]");
-        history.unshift({
-            date: new Date().toLocaleDateString('ta-IN'),
-            subject, topic, score, total: questions.length
-        });
+        history.unshift({ date: new Date().toLocaleDateString('ta-IN'), subject, topic, score, total: questions.length });
         localStorage.setItem('test_history', JSON.stringify(history));
         localStorage.setItem('weak_topics', JSON.stringify(wrongTopics));
     }
@@ -502,10 +464,6 @@
                 <div style="font-size:11px; color:var(--text-sub); margin-top:2px;">தேதி: ${w.date}</div>
             </div>
         `).join('');
-    }
-
-    function askAiHelp(qText) {
-        showModal("AI உதவி", `"${qText}" குறித்த கூடுதல் சந்தேக விளக்கங்கள் அடுத்த புதுப்பிப்பில் சேர்க்கப்படும்.`);
     }
 
     function showModal(title, desc) {

@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TNPSC AI Test Generator</title>
-    <!-- Google Fonts & Font Awesome Icons -->
     <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -17,244 +16,31 @@
             --accent-glow: rgba(56, 189, 248, 0.3);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --success: #22c55e;
+            --input-bg: #1e293b;
             --warning: #f59e0b;
         }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Mukta Malar', sans-serif;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mukta Malar', sans-serif; }
+        body { background: var(--bg-gradient); color: var(--text-primary); min-height: 100vh; display: flex; flex-direction: column; align-items: center; padding: 15px; }
+        .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 16px; }
 
-        body {
-            background: var(--bg-gradient);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 15px;
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 12px 18px; background: var(--card-bg); border: 1px solid var(--card-border); backdrop-filter: blur(10px); border-radius: 16px; }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { font-size: 24px; color: var(--accent-color); }
+        .streak-badge { background: rgba(245, 158, 11, 0.15); border: 1px solid var(--warning); color: var(--warning); padding: 6px 12px; border-radius: 20px; font-size: 13px; font-weight: 600; }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
-        }
+        .info-card { background: var(--card-bg); border: 1px solid var(--card-border); border-radius: 16px; padding: 16px; backdrop-filter: blur(10px); }
+        .info-card h3 { font-size: 15px; color: var(--accent-color); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--card-border); padding-bottom: 6px; }
 
-        /* Header UI */
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 18px;
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            backdrop-filter: blur(10px);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-        }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; color: var(--text-secondary); margin-bottom: 6px; font-weight: 600; }
+        .form-control { width: 100%; padding: 11px 14px; background: var(--input-bg); border: 1px solid var(--card-border); border-radius: 10px; color: var(--text-primary); font-size: 14px; outline: none; }
+        .form-control:focus { border-color: var(--accent-color); box-shadow: 0 0 8px var(--accent-glow); }
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .logo-icon {
-            font-size: 24px;
-            color: var(--accent-color);
-        }
-
-        .title-text h1 {
-            font-size: 18px;
-            font-weight: 700;
-            color: var(--text-primary);
-        }
-
-        .streak-badge {
-            background: rgba(245, 158, 11, 0.15);
-            border: 1px solid var(--warning);
-            color: var(--warning);
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        /* Loading / Animation Section */
-        .loading-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 25px 20px;
-            text-align: center;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            backdrop-filter: blur(10px);
-        }
-
-        .ai-pulse-ring {
-            position: relative;
-            width: 80px;
-            height: 80px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .ai-pulse-ring i {
-            font-size: 32px;
-            color: var(--accent-color);
-            z-index: 2;
-        }
-
-        .pulse {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: var(--accent-glow);
-            border-radius: 50%;
-            animation: pulse-animation 2s infinite ease-out;
-        }
-
-        @keyframes pulse-animation {
-            0% { transform: scale(0.8); opacity: 0.8; }
-            100% { transform: scale(1.5); opacity: 0; }
-        }
-
-        .loading-text {
-            font-size: 16px;
-            font-weight: 600;
-            color: var(--accent-color);
-        }
-
-        /* Detail Cards */
-        .info-card {
-            background: var(--card-bg);
-            border: 1px solid var(--card-border);
-            border-radius: 16px;
-            padding: 16px;
-            backdrop-filter: blur(10px);
-        }
-
-        .info-card h3 {
-            font-size: 15px;
-            color: var(--accent-color);
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            border-bottom: 1px solid var(--card-border);
-            padding-bottom: 6px;
-        }
-
-        .info-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 14px;
-            margin-bottom: 6px;
-            color: var(--text-secondary);
-        }
-
-        .info-item span:last-child {
-            color: var(--text-primary);
-            font-weight: 600;
-        }
-
-        /* Topics Chips */
-        .chip-group {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 8px;
-        }
-
-        .chip {
-            background: rgba(56, 189, 248, 0.1);
-            border: 1px solid var(--accent-glow);
-            color: var(--accent-color);
-            padding: 6px 12px;
-            border-radius: 12px;
-            font-size: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .chip:hover {
-            background: var(--accent-color);
-            color: #0f172a;
-        }
-
-        /* Action Button */
-        .btn-primary {
-            background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%);
-            color: #ffffff;
-            border: none;
-            padding: 14px;
-            border-radius: 14px;
-            font-size: 16px;
-            font-weight: 700;
-            width: 100%;
-            cursor: pointer;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 20px var(--accent-glow);
-            transition: transform 0.2s ease;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-        }
-
-        /* Custom Modal Alert */
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            padding: 20px;
-        }
-
-        .modal-box {
-            background: #1e293b;
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 20px;
-            max-width: 400px;
-            width: 100%;
-            text-align: center;
-        }
-
-        .modal-title {
-            color: var(--warning);
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-
-        .modal-desc {
-            color: var(--text-secondary);
-            font-size: 14px;
-            margin-bottom: 18px;
-        }
+        .btn-primary { background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%); color: #ffffff; border: none; padding: 14px; border-radius: 14px; font-size: 16px; font-weight: 700; width: 100%; cursor: pointer; display: flex; justify-content: center; align-items: center; gap: 8px; box-shadow: 0 4px 20px var(--accent-glow); }
+        
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-box { background: #1e293b; border: 1px solid var(--card-border); border-radius: 20px; padding: 20px; max-width: 400px; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
@@ -264,99 +50,212 @@
         <header>
             <div class="logo-area">
                 <i class="fa-solid fa-graduation-cap logo-icon"></i>
-                <div class="title-text">
-                    <h1>TNPSC AI தேர்வு</h1>
-                </div>
+                <div class="title-text"><h1>TNPSC AI தேர்வு</h1></div>
             </div>
-            <div class="streak-badge">
-                <i class="fa-solid fa-fire"></i> 0 Days Streak
-            </div>
+            <div class="streak-badge"><i class="fa-solid fa-fire"></i> 0 Days Streak</div>
         </header>
 
-        <!-- Loading State -->
-        <div class="loading-card" id="loadingCard">
-            <div class="ai-pulse-ring">
-                <div class="pulse"></div>
-                <i class="fa-solid fa-brain"></i>
-            </div>
-            <div class="loading-text">AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...</div>
-        </div>
-
-        <!-- Exam Details -->
+        <!-- API Key Input -->
         <div class="info-card">
-            <h3><i class="fa-solid fa-list-check"></i> தேர்வு விவரங்கள்</h3>
-            <div class="info-item">
-                <span>சப்ஜெக்ட்:</span>
-                <span>தமிழ்நாடு வரலாறு</span>
-            </div>
-            <div class="info-item">
-                <span>தலைப்பு:</span>
-                <span>சேரர்கள் & சோழர்கள்</span>
-            </div>
-            <div class="info-item">
-                <span>வினாக்கள்:</span>
-                <span>10 (Deep Level)</span>
+            <h3><i class="fa-solid fa-key"></i> API சாவி (API Key)</h3>
+            <div class="form-group">
+                <label>Gemini API Key உள்ளிடவும்:</label>
+                <input type="password" id="apiKeyInput" class="form-control" placeholder="AIZA..." />
             </div>
         </div>
 
-        <!-- Engine Status -->
+        <!-- TNPSC Full Syllabus Selection -->
         <div class="info-card">
-            <h3><i class="fa-solid fa-microchip"></i> ஏஐ நிலை</h3>
-            <div class="info-item">
-                <span>ஏஐ மாதிரி:</span>
-                <span>gemini-2.0-flash (செயலிலுள்ளது)</span>
+            <h3><i class="fa-solid fa-book-bookmark"></i> பாடத்திட்டம் (Syllabus Selection)</h3>
+            
+            <!-- Exam Category -->
+            <div class="form-group">
+                <label>1. தேர்வு வகை (Exam Level):</label>
+                <select id="examSelect" class="form-control">
+                    <option value="Group 4 / VAO">TNPSC Group 4 / VAO</option>
+                    <option value="Group 2 / 2A">TNPSC Group 2 / 2A</option>
+                    <option value="Group 1">TNPSC Group 1</option>
+                </select>
             </div>
-            <div class="info-item">
-                <span>ஆய்வு நிலை:</span>
-                <span style="color: var(--success);"><i class="fa-solid fa-circle-check"></i> பாடநூல் சரிபார்க்கப்பட்டது</span>
+
+            <!-- Unit / Subject -->
+            <div class="form-group">
+                <label>2. பாடம் / யூனிட் (Subject / Unit):</label>
+                <select id="subjectSelect" class="form-control" onchange="updateTopics()">
+                    <option value="General Tamil">பொதுத் தமிழ் (General Tamil)</option>
+                    <option value="Unit 8">Unit 8: தமிழ்நாட்டின் வரலாறு, பண்பாடு & சமூக இயக்கங்கள்</option>
+                    <option value="Unit 9">Unit 9: தமிழகத்தில் வளர்ச்சி நிர்வாகம் (Development Admin)</option>
+                    <option value="History">இந்திய வரலாறு & பண்பாடு (History & Culture)</option>
+                    <option value="Polity">இந்திய ஆட்சியியல் (Indian Polity)</option>
+                    <option value="Geography">இந்திய புவியியல் (Geography)</option>
+                    <option value="Economy">இந்திய பொருளாதாரம் (Economy)</option>
+                    <option value="INM">இந்திய தேசிய இயக்கம் (INM)</option>
+                    <option value="Science">பொது அறிவியல் (General Science)</option>
+                    <option value="Aptitude">திறனறிவும் மனக்கணக்கு நுண்ணறிவும் (Aptitude)</option>
+                </select>
+            </div>
+
+            <!-- Topic Selection -->
+            <div class="form-group">
+                <label>3. தலைப்பு (Sub-Topic):</label>
+                <select id="topicSelect" class="form-control">
+                    <!-- Topics will populate dynamically -->
+                </select>
+            </div>
+
+            <!-- Custom Topic -->
+            <div class="form-group">
+                <label>4. சொந்தத் தலைப்பு (விருப்பப்பட்டால் Type செய்யவும்):</label>
+                <input type="text" id="customTopic" class="form-control" placeholder="மேலே உள்ள பட்டியல் தவிர வேறு தலைப்பு வேண்டுமெனில் தட்டச்சு செய்யவும்..." />
+            </div>
+
+            <!-- Question Count -->
+            <div class="form-group">
+                <label>5. வினாக்கள் எண்ணிக்கை:</label>
+                <select id="questionCount" class="form-control">
+                    <option value="5">5 வினாக்கள் (Quick Test)</option>
+                    <option value="10" selected>10 வினாக்கள் (Standard)</option>
+                    <option value="20">20 வினாக்கள் (Deep Level Test)</option>
+                </select>
             </div>
         </div>
 
-        <!-- Trending Topics -->
-        <div class="info-card">
-            <h3><i class="fa-solid fa-arrow-trend-up"></i> தற்போதைய ட்ரெண்டிங் தலைப்புகள்</h3>
-            <div class="chip-group">
-                <div class="chip">சமகால அரசியல்</div>
-                <div class="chip">அறிவியல் மற்றும் தொழில்நுட்பம்</div>
-                <div class="chip">யூனிட் 8 & 9</div>
-            </div>
-        </div>
-
-        <!-- Submit Button -->
+        <!-- Start Button -->
         <button class="btn-primary" onclick="generateQuestions()">
-            <i class="fa-solid fa-wand-magic-sparkles"></i> இப்போதே தேர்வை துவங்கு
+            <i class="fa-solid fa-wand-magic-sparkles"></i> AI தேர்வை உருவாக்கு
         </button>
     </div>
 
-    <!-- Custom Popup Modal for Error Handling -->
+    <!-- Modal Popup -->
     <div class="modal-overlay" id="customModal">
         <div class="modal-box">
-            <div class="modal-title" id="modalTitle">அறிவிப்பு</div>
-            <div class="modal-desc" id="modalDesc">செய்தி...</div>
+            <h3 id="modalTitle" style="color: var(--accent-color); margin-bottom:10px;">அறிவிப்பு</h3>
+            <p id="modalDesc" style="color: var(--text-secondary); margin-bottom:18px; font-size:14px;">செய்தி...</p>
             <button class="btn-primary" onclick="closeModal()">சரி</button>
         </div>
     </div>
 
     <script>
-        const API_KEY = "YOUR_GEMINI_API_KEY"; // உங்கள் API சாவி
+        // TNPSC பாடத்திட்டத்திற்கான தலைப்புகள் (Dynamic Topics Database)
+        const syllabusData = {
+            "General Tamil": [
+                "இலக்கணம் - பொருத்துதல், புகழ் பெற்ற நூல் நூலாசிரியர்",
+                "இலக்கணம் - பிரித்தெழுதுக, சேர்த்தெழுதுக",
+                "இலக்கியம் - திருக்குறள், எட்டுத்தொகை, பத்துப்பாட்டு",
+                "இலக்கியம் - ஐம்பெருங்காப்பியங்கள், ஐஞ்சிறுங்காப்பியங்கள்",
+                "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"
+            ],
+            "Unit 8": [
+                "சங்க காலம் முதல் இக்காலம் வரையிலான தமிழ் இலக்கியம்",
+                "திருக்குறள் (அறத்துப்பால், பொருட்பால், இன்பத்துப்பால்)",
+                "விடுதலைப் போராட்டத்தில் தமிழ்நாட்டின் பங்கு",
+                "19 மற்றும் 20-ஆம் நூற்றாண்டின் சமூக-அரசியல் இயக்கங்கள்",
+                "சேர, சோழ, பாண்டியர் வரலாறு & தொல்லியல் கண்டுபிடிப்புகள்"
+            ],
+            "Unit 9": [
+                "தமிழ்நாட்டின் மனிதவள மேம்பாட்டுக் குறியீடுகள் (HDI)",
+                "தமிழக அரசின் நலத்திட்டங்கள் & சமூக நீதி",
+                "தமிழ்நாட்டின் பொருளாதாரப் போக்குகள் & மின்-ஆளுமை (e-Governance)",
+                "தமிழகத்தின் கல்வி மற்றும் சுகாதார முறைகள்"
+            ],
+            "History": [
+                "சிந்துவெளி நாகரிகம் (Indus Valley)",
+                "குப்தர்கள், டெல்லி சுல்தான்கள், முகலாயர்கள்",
+                "விஜயநகர மற்றும் பாமினி அரசுகள்",
+                "மராத்தியர்கள் & தென்னிந்திய வரலாறு"
+            ],
+            "Polity": [
+                "இந்திய அரசியலமைப்பு - முகப்புரை & சிறப்பியல்புகள்",
+                "அடிப்படை உரிமைகள் & அடிப்படை கடமைகள்",
+                "மத்திய அரசு, மாநில அரசு & உள்ளாட்சி அமைப்புகள் (பஞ்சாயத்து ராஜ்)",
+                "கூட்டாட்சியின் அடிப்படைத் தன்மைகள் & தேர்தல் ஆணையம்"
+            ],
+            "Geography": [
+                "அமைவிடம் - இயற்கை அமைவுகள் & பருவமழை",
+                "நீர் வளங்கள், ஆறுகள் & மண் வகைகள்",
+                "காடுகள் & வன உயிரினங்கள்",
+                "போக்குவரத்து & தகவல் தொடர்பு"
+            ],
+            "Economy": [
+                "இந்திய பொருளாதாரத்தின் இயல்புகள் & ஐந்தாண்டுத் திட்டங்கள்",
+                "நிதி ஆயோக் (NITI Aayog) & ரிசர்வ் வங்கி (RBI)",
+                "ஜிஎஸ்டி (GST) & வரி அமைப்பு",
+                "வேளாண்மை & ஊரக வளர்ச்சி திட்டங்கள்"
+            ],
+            "INM": [
+                "தேசிய மறுமலர்ச்சி & தொடக்ககால எழுச்சிகள்",
+                "இந்திய தேசிய காங்கிரஸ் (INC) & தலைவர்கள்",
+                "காந்திய காலகட்டம் & பகத் சிங், நேதாஜி பங்கு",
+                "தமிழ்நாட்டின் விடுதலைப் போராட்ட தலைவர்கள் (பாரதியார், வ.உ.சி, ராஜாஜி)"
+            ],
+            "Science": [
+                "இயற்பியல் - அளவீடுகள், விசை, இயக்கம், மின்சாரவியல்",
+                "வேதியியல் - அமிலங்கள், காரங்களும, உப்புக்கள், தனிமங்கள்",
+                "உயிரியல் - மனித உடலியங்கியல், நோய்கள் & ஊட்டச்சத்து",
+                "சுற்றுச்சூழல் & சூழலியல்"
+            ],
+            "Aptitude": [
+                "மீ.பொ.வ (HCF) மற்றும் மீ.சி.ம (LCM)",
+                "விகிதம் மற்றும் சமவிகிதம் (Ratio & Proportion)",
+                "தனிவட்டி மற்றும் கூட்டுவட்டி (Simple & Compound Interest)",
+                "பரப்பளவு மற்றும் சுற்றளவு (Area & Volume)",
+                "எழுத்து மற்றும் எண் காரணவியல் (Reasoning)"
+            ]
+        };
 
+        // பாடம் மாறும்போது தலைப்புகளைப் புதுப்பிக்கும் Function
+        function updateTopics() {
+            const subjectSelect = document.getElementById('subjectSelect').value;
+            const topicSelect = document.getElementById('topicSelect');
+            topicSelect.innerHTML = '';
+
+            const topics = syllabusData[subjectSelect] || [];
+            topics.forEach(topic => {
+                const option = document.createElement('option');
+                option.value = topic;
+                option.textContent = topic;
+                topicSelect.appendChild(option);
+            });
+        }
+
+        // முதன்முறை பக்கத்தை லோட் செய்யும் போது தலைப்புகளை அமைக்க
+        window.onload = function() {
+            updateTopics();
+        };
+
+        // AI வினாக்கள் உருவாக்கும் Function
         async function generateQuestions() {
-            document.getElementById('loadingCard').style.display = 'flex';
-            
-            // Deep Check & Textbook Accuracy-க்கான ஆழமான Prompt
+            const apiKey = document.getElementById('apiKeyInput').value.trim();
+            const exam = document.getElementById('examSelect').value;
+            const subject = document.getElementById('subjectSelect').value;
+            const selectedTopic = document.getElementById('topicSelect').value;
+            const customTopic = document.getElementById('customTopic').value.trim();
+            const count = document.getElementById('questionCount').value;
+
+            const finalTopic = customTopic !== "" ? customTopic : selectedTopic;
+
+            if (!apiKey) {
+                showModal("API Key தேவை", "தயவுசெய்து உங்கள் Gemini API Key-ஐ உள்ளிடவும்.");
+                return;
+            }
+
+            showModal("ஆய்வு செய்யப்படுகிறது...", `${exam} - ${subject} கீழ் "${finalTopic}" தலைப்பிலிருந்து ${count} வினாக்கள் உருவாக்கம் பெறுகின்றன.`);
+
             const deepPrompt = `
-                நீ ஒரு TNPSC தேர்வு வல்லுநர். தமிழ்நாட்டின் வரலாறு - சேரர்கள் மற்றும் சோழர்கள் என்ற தலைப்பில் 10 ஆழமான (Deep Level) வினாக்களை உருவாக்கவும்.
+                நீ ஒரு TNPSC தேர்வு வல்லுநர்.
+                தேர்வு: ${exam}
+                பாடம்: ${subject}
+                தலைப்பு: ${finalTopic}
                 
-                விதிகள்:
-                1. தமிழ்நாடு அரசு 6-12 வகுப்பு பாடநூல்களின் அடிப்படையில் மட்டுமே இருக்க வேண்டும்.
-                2. குறைந்தபட்சம் 3 கூற்று-காரணம் (Statement & Reason) மற்றும் பொருத்துக (Match) கேள்விகளை சேர்க்கவும்.
-                3. ஒவ்வொரு கேள்விக்கும் 4 ஆப்ஷன்கள் மற்றும் ஆழமான விளக்கம் (Detailed Explanation) இருக்க வேண்டும்.
-                4. JSON வடிவில் மட்டும் பதிலளிக்கவும்.
+                கண்டிப்பான விதிகள்:
+                1. தமிழ்நாடு அரசு 6 முதல் 12-ஆம் வகுப்பு பாடநூல்களின் அடிப்படையில் ${count} ஆழமான (Deep Level) வினாக்களை உருவாக்கவும்.
+                2. கூற்று-காரணம் (Statement & Reason) மற்றும் பொருத்துக (Match) வினாக்களைச் சேர்க்கவும்.
+                3. ஒவ்வொரு கேள்விக்கும் 4 விருப்பங்கள் (A, B, C, D) மற்றும் ஆழமான விளக்கம் (Detailed Explanation) இருக்க வேண்டும்.
+                4. JSON வடிவத்தில் மட்டுமே பதிலளிக்கவும்.
             `;
 
             try {
-                // gemini-2.0-flash / gemini-1.5-pro பயன்பாடு (models/ இல்லாமல்)
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`, {
+                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
@@ -365,14 +264,14 @@
                 });
 
                 const data = await response.json();
-                
+
                 if (data.error) {
                     showModal("பிழை ஏற்பட்டது", data.error.message);
                 } else {
-                    showModal("வெற்றி!", "ஆழமாக ஆய்வு செய்யப்பட்ட TNPSC வினாக்கள் உருவாக்கப்பட்டுவிட்டன.");
+                    showModal("வெற்றி!", "வினாக்கள் வெற்றிகரமாக உருவாக்கப்பட்டுவிட்டன.");
                 }
             } catch (err) {
-                showModal("இணைப்பு பிழை", "API இணைப்பில் சிக்கல் உள்ளது. மீண்டும் முயற்சிக்கவும்.");
+                showModal("பிழை", "API இணைப்பில் சிக்கல் உள்ளது. மீண்டும் முயற்சிக்கவும்.");
             }
         }
 

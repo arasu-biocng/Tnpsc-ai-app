@@ -13,7 +13,7 @@
             --card-bg: #1e293b;
             --border: rgba(255, 255, 255, 0.1);
             --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.3);
+            --accent-glow: rgba(56, 189, 248, 0.35);
             --success: #22c55e;
             --danger: #ef4444;
             --warning: #f59e0b;
@@ -42,6 +42,66 @@
         .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-sub); border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; font-weight: 600; }
         .tab-btn.active { background: var(--accent); color: #000; font-weight: 700; }
 
+        /* Brain Pulse Loading Animation (Image 2 Style) */
+        .brain-loading-card {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-align: center;
+            gap: 15px;
+        }
+
+        .ai-brain-pulse {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ai-brain-pulse i {
+            font-size: 34px;
+            color: var(--accent);
+            z-index: 2;
+        }
+
+        .brain-pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-glow);
+            border-radius: 50%;
+            animation: pulse-ring 1.8s infinite ease-out;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.75); opacity: 0.9; }
+            100% { transform: scale(1.45); opacity: 0; }
+        }
+
+        .loading-details {
+            width: 100%;
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 13px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .loading-details-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .loading-details-row:last-child { margin-bottom: 0; }
+
         /* Quiz Interface */
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .timer { color: var(--warning); font-size: 15px; }
@@ -54,11 +114,6 @@
         .wrong-border { border-left-color: var(--danger); }
         .explanation { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; }
         .ai-help-btn { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid var(--accent); padding: 5px 10px; border-radius: 6px; font-size: 11px; margin-top: 8px; cursor: pointer; font-weight: 600; }
-
-        /* Loading Animation */
-        .loading { text-align: center; padding: 30px; display: none; }
-        .spinner { font-size: 32px; color: var(--accent); animation: spin 1s linear infinite; margin-bottom: 10px; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* Modal Popup */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
@@ -138,10 +193,28 @@
         <button class="btn-primary" onclick="generateQuestions()"><i class="fa-solid fa-wand-magic-sparkles"></i> தேர்வைத் தொடங்கு</button>
     </div>
 
-    <!-- Loading Animation -->
-    <div id="loading" class="card loading">
-        <i class="fa-solid fa-circle-notch spinner"></i>
-        <p style="font-size:15px; font-weight:600;">AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...</p>
+    <!-- Brain Pulse Loading Animation (Image 2) -->
+    <div id="loadingCard" class="brain-loading-card">
+        <div class="ai-brain-pulse">
+            <div class="brain-pulse-ring"></div>
+            <i class="fa-solid fa-brain"></i>
+        </div>
+        <div style="font-size:16px; font-weight:700; color:var(--text);">AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...</div>
+        
+        <div class="loading-details">
+            <div class="loading-details-row">
+                <span style="color:var(--text-sub);">பாடம்:</span>
+                <strong id="lblSubject" style="color:var(--accent);">-</strong>
+            </div>
+            <div class="loading-details-row">
+                <span style="color:var(--text-sub);">தலைப்பு:</span>
+                <strong id="lblTopic" style="color:var(--text);">-</strong>
+            </div>
+            <div class="loading-details-row">
+                <span style="color:var(--text-sub);">வினாக்கள்:</span>
+                <strong id="lblCount" style="color:var(--success);">-</strong>
+            </div>
+        </div>
     </div>
 
     <!-- Quiz Area -->
@@ -197,7 +270,7 @@
         "Unit 7": ["தேசிய மறுமலர்ச்சி & தொடக்ககால எழுச்சிகள்", "இந்திய தேசிய காங்கிரஸ் & தலைவர்கள்", "தமிழ்நாட்டின் விடுதலைப் போராட்ட தலைவர்கள்"],
         "Unit 8": ["சங்க காலம் முதல் தமிழ் இலக்கியம்", "விடுதலைப் போராட்டத்தில் தமிழ்நாட்டின் பங்கு", "சேர, சோழ, பாண்டியர் வரலாறு"],
         "Unit 9": ["மனிதவள மேம்பாட்டுக் குறியீடுகள் (HDI)", "தமிழக அரசின் நலத்திட்டங்கள் & சமூக நீதி", "மின்-ஆளுமை (e-Governance)"],
-        "Unit 10": ["மீ.பொ.வ (HCF) & மீ.စီ.ம (LCM)", "தனிவட்டி & கூட்டுவட்டி", "விகிதம் & சமவிகிதம்"]
+        "Unit 10": ["மீ.பொ.வ (HCF) & மீ.சி.ம (LCM)", "தனிவட்டி & கூட்டுவட்டி", "விகிதம் & சமவிகிதம்"]
     };
 
     let questions = [];
@@ -234,7 +307,7 @@
     }
 
     function switchTab(tab) {
-        ['createTab', 'quizTab', 'resultTab', 'historyTab', 'weaknessTab', 'loading'].forEach(id => document.getElementById(id).style.display = 'none');
+        ['createTab', 'quizTab', 'resultTab', 'historyTab', 'weaknessTab', 'loadingCard'].forEach(id => document.getElementById(id).style.display = 'none');
         document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
 
         if(tab === 'create') { document.getElementById('createTab').style.display = 'block'; document.getElementById('btn-tab-create').classList.add('active'); }
@@ -250,27 +323,33 @@
             return; 
         }
 
-        document.getElementById('createTab').style.display = 'none';
-        document.getElementById('loading').style.display = 'block';
-
         const exam = document.getElementById('examSelect').value;
         const subject = document.getElementById('subjectSelect').value;
         const topic = document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
         const count = document.getElementById('questionCount').value;
+
+        // Populate Loading Card Details
+        document.getElementById('lblSubject').innerText = subject;
+        document.getElementById('lblTopic').innerText = topic;
+        document.getElementById('lblCount').innerText = `${count} வினாக்கள்`;
+
+        document.getElementById('createTab').style.display = 'none';
+        document.getElementById('loadingCard').style.display = 'flex';
 
         const prompt = `TNPSC ${exam} - ${subject} (${topic}) தலைப்பில் ${count} வினாக்களை உருவாக்கவும். 
         கண்டிப்பாக JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]
         குறிப்பு: ans என்பது சரியான விடையின் Index எண்ணாக (0, 1, 2, அல்லது 3) மட்டுமே இருக்க வேண்டும்.`;
 
-        // Working Models for Gemini API v1beta
-        const models = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+        // Correct API Endpoints Format
+        const models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"];
         let success = false;
         let lastError = "";
 
         for (let model of models) {
             try {
-                const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`, {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                const res = await fetch(url, {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
@@ -292,7 +371,7 @@
             }
         }
 
-        document.getElementById('loading').style.display = 'none';
+        document.getElementById('loadingCard').style.display = 'none';
 
         if(success && questions.length > 0) {
             currentQ = 0;
@@ -411,7 +490,7 @@
     }
 
     function askAiHelp(qText) {
-        showModal("AI உதவி", `"${qText}" குறித்த கூடுதல் சந்தேக விளக்கங்கள் அடுத்த பதிப்பில் சேர்க்கப்படும்.`);
+        showModal("AI உதவி", `"${qText}" குறித்த கூடுதல் சந்தேக விளக்கங்கள் அடுத்த புதுப்பிப்பில் சேர்க்கப்படும்.`);
     }
 
     function showModal(title, desc) {

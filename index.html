@@ -42,7 +42,7 @@
         .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-sub); border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; font-weight: 600; }
         .tab-btn.active { background: var(--accent); color: #000; font-weight: 700; }
 
-        /* Brain Pulse Loading Animation (Image 2 Style) */
+        /* Brain Pulse Loading Animation */
         .brain-loading-card {
             display: none;
             flex-direction: column;
@@ -187,13 +187,13 @@
                 <option value="10">10 வினாக்கள் (Quick Test)</option>
                 <option value="20">20 வினாக்கள் (Standard)</option>
                 <option value="30">30 வினாக்கள் (Deep Level)</option>
-                <option value="40" selected>40 வினாக்கள் (Full Test)</option>
+                <option value="40" selected>30 வினாக்கள் (Full Test)</option>
             </select>
         </div>
         <button class="btn-primary" onclick="generateQuestions()"><i class="fa-solid fa-wand-magic-sparkles"></i> தேர்வைத் தொடங்கு</button>
     </div>
 
-    <!-- Brain Pulse Loading Animation (Image 2) -->
+    <!-- Brain Pulse Loading Animation -->
     <div id="loadingCard" class="brain-loading-card">
         <div class="ai-brain-pulse">
             <div class="brain-pulse-ring"></div>
@@ -328,7 +328,7 @@
         const topic = document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
         const count = document.getElementById('questionCount').value;
 
-        // Populate Loading Card Details
+        // Loading Card Updates
         document.getElementById('lblSubject').innerText = subject;
         document.getElementById('lblTopic').innerText = topic;
         document.getElementById('lblCount').innerText = `${count} வினாக்கள்`;
@@ -341,8 +341,8 @@
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]
         குறிப்பு: ans என்பது சரியான விடையின் Index எண்ணாக (0, 1, 2, அல்லது 3) மட்டுமே இருக்க வேண்டும்.`;
 
-        // Correct API Endpoints Format
-        const models = ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-1.0-pro"];
+        // Strictly stable API endpoints (No 1.0-pro to prevent 404/not-found errors)
+        const models = ["gemini-1.5-flash", "gemini-1.5-pro"];
         let success = false;
         let lastError = "";
 

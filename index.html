@@ -318,7 +318,8 @@
         let lastError = "";
         let questionsData = null;
 
-        const modelsToTry = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+        // Updated model fallback list for v1beta endpoint
+        const modelsToTry = ["gemini-3.7-flash", "gemini-3.5-flash", "gemini-2.5-flash"];
 
         for (let modelName of modelsToTry) {
             try {

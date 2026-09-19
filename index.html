@@ -290,6 +290,54 @@
         if(tab === 'weakness') { document.getElementById('weaknessTab').style.display = 'block'; document.getElementById('btn-tab-weakness').classList.add('active'); loadWeakness(); }
     }
 
+    // புதிய API ஃபங்க்ஷன் (3.6 உட்பட அனைத்து மாடல்களும் இணைக்கப்பட்டுள்ளது)
+    async function callGeminiAPI(apiKey, prompt, isJson = false) {
+        const models = ["gemini-3.6-flash", "gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"];
+        let lastError = "";
+
+        for (const model of models) {
+            let delay = 2000;
+            
+            for (let attempt = 1; attempt <= 3; attempt++) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+                    const payload = { contents: [{ parts: [{ text: prompt }] }] };
+                    if (isJson) {
+                        payload.generationConfig = { responseMimeType: "application/json" };
+                    }
+
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await res.json();
+                    
+                    if (res.ok && data.candidates && data.candidates[0].content) {
+                        return data.candidates[0].content.parts[0].text;
+                    } 
+                    
+                    if (data.error) {
+                        lastError = data.error.message;
+                        if (data.error.code === 429 || data.error.code === 503 || lastError.toLowerCase().includes("demand")) {
+                            await new Promise(r => setTimeout(r, delay));
+                            delay *= 2;
+                        } else {
+                            break;
+                        }
+                    }
+                } catch (e) {
+                    lastError = e.message;
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2;
+                }
+            }
+        }
+        
+        throw new Error("Google Gemini சேவையகம் தற்போது அதிக நெரிசலில் உள்ளது. 1 நிமிடம் கழித்து மீண்டும் முயற்சிக்கவும்.");
+    }
+
     async function generateQuestions(customSubject = null, customTopicName = null) {
         const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('apiKeyInput').value.trim();
         if(!apiKey) { 
@@ -318,51 +366,28 @@
         கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]`;
 
-        let success = false;
-        let lastError = "";
-        let questionsData = null;
-        const modelName = "gemini-3.6-flash";
-
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ 
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { responseMimeType: "application/json" }
-                })
-            });
+            let responseText = await callGeminiAPI(apiKey, prompt, true);
+            responseText = responseText.replace(/```json/g, "").replace(/```/g, "").trim();
+            const firstBracket = responseText.indexOf('[');
+            const lastBracket = responseText.lastIndexOf(']');
 
-            const data = await res.json();
-            if (res.ok && data.candidates && data.candidates[0].content) {
-                let text = data.candidates[0].content.parts[0].text;
-                text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-                const firstBracket = text.indexOf('[');
-                const lastBracket = text.lastIndexOf(']');
-
-                if (firstBracket !== -1 && lastBracket !== -1) {
-                    text = text.substring(firstBracket, lastBracket + 1);
-                    questionsData = JSON.parse(text);
-                    success = true;
-                }
-            } else if (data.error) {
-                lastError = data.error.message;
+            if (firstBracket !== -1 && lastBracket !== -1) {
+                responseText = responseText.substring(firstBracket, lastBracket + 1);
+                questions = JSON.parse(responseText);
+                
+                document.getElementById('loadingCard').style.display = 'none';
+                currentQ = 0;
+                userAnswers = [];
+                document.getElementById('quizTab').style.display = 'block';
+                showQuestion();
+                return;
+            } else {
+                throw new Error("தரவு வடிவம் சரியாக கிடைக்கவில்லை.");
             }
-        } catch (e) {
-            lastError = e.message;
-        }
-
-        document.getElementById('loadingCard').style.display = 'none';
-
-        if (success && questionsData && questionsData.length > 0) {
-            questions = questionsData;
-            currentQ = 0;
-            userAnswers = [];
-            document.getElementById('quizTab').style.display = 'block';
-            showQuestion();
-        } else {
-            showModal("இணைப்புத் தோல்வி", lastError || "வினாக்களை உருவாக்க முடியவில்லை. API Key-ஐ சரிபார்க்கவும்.");
+        } catch (err) {
+            document.getElementById('loadingCard').style.display = 'none';
+            showModal("இணைப்புத் தோல்வி", err.message);
             document.getElementById('createTab').style.display = 'block';
         }
     }
@@ -491,31 +516,11 @@
 
         const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
 
-        const modelName = "gemini-3.6-flash";
-        let explanationText = "";
-
         try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-
-            const data = await res.json();
-            if (res.ok && data.candidates && data.candidates[0].content) {
-                explanationText = data.candidates[0].content.parts[0].text;
-            } else if (data.error) {
-                explanationText = `பிழை: ${data.error.message}`;
-            }
-        } catch (e) {
-            explanationText = `பிழை: ${e.message}`;
-        }
-
-        if (explanationText && !explanationText.startsWith("பிழை:")) {
+            const explanationText = await callGeminiAPI(apiKey, prompt, false);
             targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${explanationText.replace(/\n/g, '<br>')}</div>`;
-        } else {
-            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">${explanationText || "விளக்கம் பெற முடியவில்லை. API Key அல்லது பிணைய இணைப்பை சரிபார்க்கவும்."}</div>`;
+        } catch (e) {
+            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">${e.message}</div>`;
         }
     }
 

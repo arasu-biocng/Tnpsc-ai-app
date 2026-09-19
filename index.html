@@ -322,7 +322,7 @@
         let success = false;
         let lastError = "";
         let questionsData = null;
-        const modelsToTry = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
+        const modelsToTry = ["gemini-3.6-flash"];
 
         for (let modelName of modelsToTry) {
             try {
@@ -494,7 +494,7 @@
 
         const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
 
-        const modelsToTry = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
+        const modelsToTry = ["gemini-3.6-flash"];
         let explanationText = "";
 
         for (let modelName of modelsToTry) {

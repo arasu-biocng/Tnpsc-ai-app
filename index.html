@@ -322,7 +322,7 @@
         let success = false;
         let lastError = "";
         let questionsData = null;
-        const modelsToTry = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-3.5-flash"];
+        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro"];
 
         for (let modelName of modelsToTry) {
             try {
@@ -424,7 +424,6 @@
         const topic = currentTestMetaData.topic;
         const date = new Date().toLocaleDateString('ta-IN');
 
-        // 1. பலவீனமான பகுதிகளை ஒரே தலைப்பாக சேமித்தல் (Unique Topic Only)
         if(wrongCount > 0) {
             let weakMap = JSON.parse(localStorage.getItem('weak_topics_map') || "{}");
             let key = `${subject}||${topic}`;
@@ -437,7 +436,6 @@
             localStorage.setItem('weak_topics_map', JSON.stringify(weakMap));
         }
 
-        // 2. முழு தேர்வை Internal Storage-இல் சேமித்தல் (Save Full Test for Review)
         let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
         const testRecord = {
             id: Date.now(),
@@ -494,22 +492,34 @@
 
         const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
 
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-            const data = await res.json();
-            if(data.candidates && data.candidates[0].content) {
-                let text = data.candidates[0].content.parts[0].text;
-                targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${text.replace(/\n/g, '<br>')}</div>`;
-            } else {
-                targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை.</div>`;
+        let success = false;
+        let lastError = "";
+        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro"];
+
+        for (let modelName of modelsToTry) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+                const data = await res.json();
+                if(res.ok && data.candidates && data.candidates[0].content) {
+                    let text = data.candidates[0].content.parts[0].text;
+                    targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${text.replace(/\n/g, '<br>')}</div>`;
+                    success = true;
+                    break;
+                } else if(data.error) {
+                    lastError = data.error.message;
+                }
+            } catch(e) {
+                lastError = e.message;
             }
-        } catch(e) {
-            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.</div>`;
+        }
+
+        if(!success) {
+            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை: ${lastError || "பிழை ஏற்பட்டது"}</div>`;
         }
     }
 

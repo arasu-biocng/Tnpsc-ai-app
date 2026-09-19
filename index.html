@@ -3,334 +3,579 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TNPSC AI Master - Full Syllabus</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <title>TNPSC AI Master Test App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Mukta+Malar:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --bg: #0f172a;
             --card-bg: #1e293b;
-            --accent: #0284c7;
-            --accent-hover: #0369a1;
-            --text: #f8fafc;
-            --text-muted: #94a3b8;
-            --border: #334155;
-            --danger: #ef4444;
+            --border: rgba(255, 255, 255, 0.1);
+            --accent: #38bdf8;
+            --accent-glow: rgba(56, 189, 248, 0.35);
             --success: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --text: #f8fafc;
+            --text-sub: #94a3b8;
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Mukta Malar', sans-serif; }
+        body { background: var(--bg); color: var(--text); padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
+        .container { width: 100%; max-width: 600px; display: flex; flex-direction: column; gap: 15px; }
 
-        .app-container {
-            width: 100%;
-            max-width: 800px;
-            background: var(--card-bg);
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            border: 1px solid var(--border);
-        }
+        header { display: flex; justify-content: space-between; align-items: center; padding: 15px; background: var(--card-bg); border-radius: 14px; border: 1px solid var(--border); }
+        .logo-area { display: flex; align-items: center; gap: 10px; }
+        .logo-icon { font-size: 22px; color: var(--accent); }
+        
+        .btn-sm { background: var(--border); color: var(--text); border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; }
+        .btn-primary { background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; font-size: 15px; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-ai-explain { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid var(--accent); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; }
 
-        .header {
-            text-align: center;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--border);
-            padding-bottom: 15px;
-        }
+        .card { background: var(--card-bg); border-radius: 14px; padding: 18px; border: 1px solid var(--border); }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; font-size: 13px; color: var(--text-sub); margin-bottom: 5px; font-weight: 600; }
+        .form-control { width: 100%; padding: 10px; background: #0f172a; border: 1px solid var(--border); border-radius: 8px; color: var(--text); outline: none; font-size: 14px; }
 
-        .header h1 {
-            color: #38bdf8;
-            font-size: 24px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
+        .nav-tabs { display: flex; gap: 8px; }
+        .tab-btn { flex: 1; padding: 10px; background: var(--card-bg); border: 1px solid var(--border); color: var(--text-sub); border-radius: 10px; cursor: pointer; text-align: center; font-size: 12px; font-weight: 600; }
+        .tab-btn.active { background: var(--accent); color: #000; font-weight: 700; }
 
-        .tab-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-
-        .tab-btn {
-            flex: 1;
-            padding: 12px;
-            background: #0f172a;
-            border: 1px solid var(--border);
-            color: var(--text-muted);
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: bold;
-            transition: 0.3s;
-        }
-
-        .tab-btn.active {
-            background: var(--accent);
-            color: white;
-            border-color: var(--accent);
-        }
-
-        .tab-content { display: none; }
-        .tab-content.active { display: block; }
-
-        .input-group {
-            margin-bottom: 15px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 6px;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        select, input, textarea {
-            width: 100%;
-            padding: 12px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            background: #0f172a;
-            color: var(--text);
-            font-size: 15px;
-        }
-
-        button.btn-primary {
-            width: 100%;
-            padding: 14px;
-            background: var(--accent);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: bold;
-            font-size: 16px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        button.btn-primary:hover { background: var(--accent-hover); }
-
-        .quiz-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            background: #0f172a;
-            padding: 12px 15px;
-            border-radius: 8px;
-        }
-
-        .q-card {
-            background: #0f172a;
-            padding: 20px;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            margin-bottom: 15px;
-        }
-
-        .option-btn {
-            width: 100%;
-            text-align: left;
-            padding: 12px 15px;
-            margin-top: 10px;
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text);
-            border-radius: 8px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .option-btn:hover { background: #334155; }
-        .option-btn.correct { background: var(--success) !important; color: white; }
-        .option-btn.wrong { background: var(--danger) !important; color: white; }
-
-        .explanation-box {
-            margin-top: 15px;
-            padding: 15px;
-            background: #1e293b;
-            border-left: 4px solid var(--accent);
-            border-radius: 6px;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .ai-ask-box {
-            margin-top: 15px;
-            padding: 12px;
-            background: #0f172a;
-            border-radius: 8px;
-            border: 1px dashed var(--accent);
-        }
-
-        .ai-ask-box textarea {
-            height: 60px;
-            margin-bottom: 8px;
-        }
-
-        .modal {
+        .brain-loading-card {
             display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
-            z-index: 1000;
+            padding: 25px 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            text-align: center;
+            gap: 15px;
         }
 
-        .modal-content {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            max-width: 450px;
-            width: 90%;
-            text-align: center;
+        .ai-brain-pulse {
+            position: relative;
+            width: 70px;
+            height: 70px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .ai-brain-pulse i { font-size: 34px; color: var(--accent); z-index: 2; }
+
+        .brain-pulse-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-glow);
+            border-radius: 50%;
+            animation: pulse-ring 1.8s infinite ease-out;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.75); opacity: 0.9; }
+            100% { transform: scale(1.45); opacity: 0; }
+        }
+
+        .loading-details {
+            width: 100%;
+            background: #0f172a;
+            border-radius: 10px;
+            padding: 12px 15px;
+            font-size: 13px;
+            text-align: left;
             border: 1px solid var(--border);
         }
 
-        .loading-spinner {
-            text-align: center;
-            padding: 30px;
-        }
+        .loading-details-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+
+        .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .timer { color: var(--warning); font-size: 15px; }
+        .option-btn { width: 100%; padding: 12px; text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
+        
+        .q-review { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--border); }
+        .correct-border { border-left-color: var(--success); }
+        .wrong-border { border-left-color: var(--danger); }
+        .explanation { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; }
+        .ai-extra-box { font-size: 13px; color: var(--accent); background: rgba(56, 189, 248, 0.08); padding: 10px; border-radius: 6px; margin-top: 8px; border: 1px dashed var(--accent); line-height: 1.5; }
+
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
+        .modal-box { background: #1e293b; border: 1px solid var(--border); border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; text-align: center; }
     </style>
 </head>
 <body>
 
-<div class="app-container">
-    <div class="header">
-        <h1><i class="fa-solid fa-graduation-cap"></i> TNPSC AI Master</h1>
-    </div>
-
-    <!-- Navigation Tabs -->
-    <div class="tab-buttons">
-        <button class="tab-btn active" id="tab1-btn" onclick="switchTab('tab-create')"><i class="fa-solid fa-gear"></i> அமைப்பு</button>
-        <button class="tab-btn" id="tab2-btn" onclick="switchTab('tab-quiz')"><i class="fa-solid fa-pen-to-square"></i> தேர்வு</button>
-        <button class="tab-btn" id="tab3-btn" onclick="switchTab('tab-result')"><i class="fa-solid fa-chart-line"></i> முடிவு</button>
-    </div>
-
-    <!-- TAB 1: Create Test -->
-    <div id="tab-create" class="tab-content active">
-        <div class="input-group">
-            <label><i class="fa-solid fa-key"></i> Gemini API Key</label>
-            <input type="password" id="apiKeyInput" placeholder="உங்கள் API சாவியை உள்ளிடவும்...">
+<div class="container">
+    <header>
+        <div class="logo-area">
+            <i class="fa-solid fa-graduation-cap logo-icon"></i>
+            <h3>TNPSC AI தேர்வு</h3>
         </div>
+        <button class="btn-sm" onclick="toggleKeySettings()"><i class="fa-solid fa-key"></i> API சாவி</button>
+    </header>
 
-        <div class="input-group">
-            <label>தேர்வு வகை (Exam)</label>
-            <select id="examSelect">
+    <div id="keySection" class="card" style="display:none;">
+        <div class="form-group">
+            <label>Gemini API Key உள்ளிடவும்:</label>
+            <input type="password" id="apiKeyInput" class="form-control" placeholder="AIZA..." />
+        </div>
+        <button class="btn-primary" onclick="saveApiKey()">சேமி</button>
+    </div>
+
+    <div class="nav-tabs">
+        <button class="tab-btn active" id="btn-tab-create" onclick="switchTab('create')">தேர்வு உருவாக்கு</button>
+        <button class="tab-btn" id="btn-tab-history" onclick="switchTab('history')">தேர்வு வரலாறு</button>
+        <button class="tab-btn" id="btn-tab-weakness" onclick="switchTab('weakness')">பலவீனமான பகுதிகள்</button>
+    </div>
+
+    <div id="createTab" class="card">
+        <div class="form-group">
+            <label>1. தேர்வு வகை:</label>
+            <select id="examSelect" class="form-control">
                 <option value="Group 4 / VAO">TNPSC Group 4 / VAO</option>
-                <option value="Group 2 / 2A">TNPSC Group 2 / 2A (Prelims)</option>
-                <option value="Group 1">TNPSC Group 1 (Prelims)</option>
+                <option value="Group 2 / 2A">TNPSC Group 2 / 2A</option>
+                <option value="Group 1">TNPSC Group 1</option>
             </select>
         </div>
-
-        <div class="input-group">
-            <label>பாடம் (Syllabus Subject)</label>
-            <select id="subjectSelect">
-                <optgroup label="மொழிப் பாடம் (Language)">
-                    <option value="பொதுத் தமிழ் - பகுதி அ (இலக்கணம்)">பொதுத் தமிழ் - பகுதி அ (இலக்கணம்)</option>
-                    <option value="பொதுத் தமிழ் - பகுதி ஆ (இலக்கியம்)">பொதுத் தமிழ் - பகுதி ஆ (இலக்கியம்)</option>
-                    <option value="பொதுத் தமிழ் - பகுதி இ (தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்)">பொதுத் தமிழ் - பகுதி இ (தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்)</option>
-                    <option value="General English - Part A (Grammar)">General English - Part A (Grammar)</option>
-                    <option value="General English - Part B (Poetry & Literature)">General English - Part B (Poetry & Literature)</option>
-                </optgroup>
-                <optgroup label="பொது அறிவு (General Studies)">
-                    <option value="பொது அறிவியல் - இயற்பியல் (Physics)">பொது அறிவியல் - இயற்பியல் (Physics)</option>
-                    <option value="பொது அறிவியல் - வேதியியல் (Chemistry)">பொது அறிவியல் - வேதியியல் (Chemistry)</option>
-                    <option value="பொது அறிவியல் - தாவரவியல் & விலங்கியல் (Biology)">பொது அறிவியல் - தாவரவியல் & விலங்கியல் (Biology)</option>
-                    <option value="நடப்பு நிகழ்வுகள் (Current Affairs)">நடப்பு நிகழ்வுகள் (Current Affairs)</option>
-                    <option value="இந்தியப் புவியியல் (Geography of India)">இந்தியப் புவியியல் (Geography of India)</option>
-                    <option value="இந்திய வரலாறு மற்றும் பண்பாடு (History & Culture)">இந்திய வரலாறு மற்றும் பண்பாடு (History & Culture)</option>
-                    <option value="இந்திய ஆட்சியியல் (Polity & Constitution)">இந்திய ஆட்சியியல் (Polity & Constitution)</option>
-                    <option value="இந்தியப் பொருளாதாரம் (Indian Economy)">இந்தியப் பொருளாதாரம் (Indian Economy)</option>
-                    <option value="இந்திய தேசிய இயக்கம் (Indian National Movement)">இந்திய தேசிய இயக்கம் (Indian National Movement)</option>
-                    <option value="Unit 8: தமிழ்நாட்டின் வரலாறு, பண்பாடு & சமூக-அரசியல் இயக்கங்கள்">Unit 8: தமிழ்நாட்டின் வரலாறு, பண்பாடு & சமூக-அரசியல் இயக்கங்கள்</option>
-                    <option value="Unit 9: தமிழ்நாட்டின் வளர்ச்சி நிர்வாகம் (Development Administration)">Unit 9: தமிழ்நாட்டின் வளர்ச்சி நிர்வாகம் (Development Administration)</option>
-                    <option value="திறனறிவும் மனக்கணக்கு நுண்ணறிவும் (Aptitude & Mental Ability)">திறனறிவும் மனக்கணக்கு நுண்ணறிவும் (Aptitude & Mental Ability)</option>
-                </optgroup>
+        <div class="form-group">
+            <label>2. பாடம் / யூனிட் (Full Syllabus):</label>
+            <select id="subjectSelect" class="form-control" onchange="updateTopics()">
+                <option value="General Tamil">பொதுத் தமிழ் (General Tamil)</option>
+                <option value="Unit 1">Unit 1: பொது அறிவியல் (General Science)</option>
+                <option value="Unit 2">Unit 2: நடப்பு நிகழ்வுகள் (Current Affairs)</option>
+                <option value="Unit 3">Unit 3: இந்தியாவின் புவியியல் (Geography)</option>
+                <option value="Unit 4">Unit 4: இந்தியாவின் வரலாறும் பண்பாடும்</option>
+                <option value="Unit 5">Unit 5: இந்திய ஆட்சியியல் (Polity)</option>
+                <option value="Unit 6">Unit 6: இந்திய பொருளாதாரம் (Economy)</option>
+                <option value="Unit 7">Unit 7: இந்திய தேசிய இயக்கம் (INM)</option>
+                <option value="Unit 8">Unit 8: தமிழ்நாட்டின் வரலாறு & பண்பாடு</option>
+                <option value="Unit 9">Unit 9: தமிழகத்தில் வளர்ச்சி நிர்வாகம்</option>
+                <option value="Unit 10">Unit 10: திறனறிவும் மனக்கணக்கு நுண்ணறிவும்</option>
             </select>
         </div>
-
-        <div class="input-group">
-            <label>குறிப்பிட்ட தலைப்பு (Topic)</label>
-            <input type="text" id="topicSelect" placeholder="எ.கா: திருக்குறள் / பஞ்சாயத்து ராஜ் / 10th Science / சிந்துவெளி நாகரிகம்">
+        <div class="form-group">
+            <label>3. தலைப்பு:</label>
+            <select id="topicSelect" class="form-control"></select>
         </div>
-
-        <div class="input-group">
-            <label>வினாக்களின் எண்ணிக்கை</label>
-            <select id="questionCount">
-                <option value="10">10 வினாக்கள்</option>
-                <option value="20" selected>20 வினாக்கள்</option>
-                <option value="35">35 வினாக்கள்</option>
-                <option value="40">40 வினாக்கள்</option>
+        <div class="form-group">
+            <label>4. சொந்தத் தலைப்பு (விருப்பப்பட்டால்):</label>
+            <input type="text" id="customTopic" class="form-control" placeholder="வேறு தலைப்பு இருந்தால் Type செய்யவும்..." />
+        </div>
+        <div class="form-group">
+            <label>5. வினாக்கள் எண்ணிக்கை:</label>
+            <select id="questionCount" class="form-control">
+                <option value="20">20 வினாக்கள் (Quick Test)</option>
+                <option value="30" selected>30 வினாக்கள் (Standard)</option>
+                <option value="40">40 வினாக்கள் (Deep Level)</option>
             </select>
         </div>
-
-        <button class="btn-primary" onclick="generateQuestions()"><i class="fa-solid fa-bolt"></i> AI தேர்வை உருவாக்கு</button>
+        <button class="btn-primary" onclick="generateQuestions()"><i class="fa-solid fa-wand-magic-sparkles"></i> தேர்வைத் தொடங்கு</button>
     </div>
 
-    <!-- Loading Screen -->
-    <div id="loadingCard" class="loading-spinner" style="display: none;">
-        <i class="fa-solid fa-spinner fa-spin fa-3x" style="color: var(--accent);"></i>
-        <p style="margin-top: 15px;" id="loadingText">AI வினாக்களை தயாரித்துக் கொண்டிருக்கிறது...</p>
+    <div id="loadingCard" class="brain-loading-card">
+        <div class="ai-brain-pulse">
+            <div class="brain-pulse-ring"></div>
+            <i class="fa-solid fa-brain"></i>
+        </div>
+        <div style="font-size:16px; font-weight:700; color:var(--text);" id="loadingStatusText">AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...</div>
+        
+        <div class="loading-details">
+            <div class="loading-details-row">
+                <span style="color:var(--text-sub);">பாடம்:</span>
+                <strong id="lblSubject" style="color:var(--accent);">-</strong>
+            </div>
+            <div class="loading-details-row">
+                <span style="color:var(--text-sub);">தலைப்பு:</span>
+                <strong id="lblTopic" style="color:var(--text);">-</strong>
+            </div>
+            <div class="loading-details-row">
+                <span style="color:var(--text-sub);">வினாக்கள்:</span>
+                <strong id="lblCount" style="color:var(--success);">-</strong>
+            </div>
+        </div>
     </div>
 
-    <!-- TAB 2: Quiz Area -->
-    <div id="tab-quiz" class="tab-content">
+    <div id="quizTab" class="card" style="display:none;">
         <div class="quiz-header">
-            <span id="lblSubject" style="color: #38bdf8; font-weight: bold;"></span>
-            <span id="lblProgress">0 / 0</span>
+            <span id="qProgress">கேள்வி 1/10</span>
+            <span class="timer"><i class="fa-regular fa-clock"></i> <span id="timerText">00:30</span></span>
         </div>
-
-        <div id="quizContainer"></div>
-
-        <button id="btnNext" class="btn-primary" style="display:none; margin-top: 15px;" onclick="nextQuestion()">அடுத்த வினா <i class="fa-solid fa-arrow-right"></i></button>
+        <h4 id="questionText" style="margin-bottom:15px; font-size:15px; line-height:1.5;">-</h4>
+        <div id="optionsContainer"></div>
     </div>
 
-    <!-- TAB 3: Results -->
-    <div id="tab-result" class="tab-content" style="text-align: center;">
-        <h2>தேர்வு முடிவுகள்</h2>
-        <div style="font-size: 48px; margin: 20px 0; color: #38bdf8;" id="scoreText">0 / 0</div>
-        <p id="scoreMessage" style="color: var(--text-muted); margin-bottom: 20px;"></p>
-        <button class="btn-primary" onclick="switchTab('tab-create')">புதிய தேர்வு தொடங்க</button>
+    <div id="resultTab" class="card" style="display:none;">
+        <h3 style="color:var(--accent);">தேர்வு முடிவுகள்</h3>
+        <p id="scoreText" style="font-size:18px; font-weight:bold; margin:10px 0;"></p>
+        <hr style="border-color:var(--border); margin-bottom:15px;">
+        <div id="reviewContainer"></div>
+        <button class="btn-primary" onclick="switchTab('create')" style="margin-top:10px;">புதிய தேர்வு எழுது</button>
+    </div>
+
+    <div id="historyTab" class="card" style="display:none;">
+        <h3>தேர்வு வரலாறு (முந்தைய தேர்வுகள்)</h3>
+        <div id="historyList" style="margin-top:12px; font-size:13px; color:var(--text-sub);">தரவுகள் இல்லை.</div>
+    </div>
+
+    <div id="weaknessTab" class="card" style="display:none;">
+        <h3>கவனிக்க வேண்டிய பலவீனமான தலைப்புகள்</h3>
+        <div id="weaknessList" style="margin-top:12px; font-size:13px; color:var(--text-sub);">தகவல்கள் இல்லை.</div>
     </div>
 </div>
 
-<!-- Global Modal -->
-<div id="customModal" class="modal">
-    <div class="modal-content">
-        <h3 id="modalTitle" style="color: #38bdf8; margin-bottom: 10px;"></h3>
-        <p id="modalMessage" style="margin-bottom: 20px; font-size: 14px;"></p>
+<div class="modal-overlay" id="customModal">
+    <div class="modal-box">
+        <h3 id="modalTitle" style="color: var(--accent); margin-bottom:10px;">அறிவிப்பு</h3>
+        <p id="modalDesc" style="color: var(--text-sub); margin-bottom:18px; font-size:14px;">செய்தி...</p>
         <button class="btn-primary" onclick="closeModal()">சரி</button>
     </div>
 </div>
 
 <script>
+    const syllabus = {
+        "General Tamil": ["இலக்கணம் - பொருத்துதல், நூல் நூலாசிரியர்", "இலக்கியம் - திருக்குறள், எட்டுத்தொகை", "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"],
+        "Unit 1": ["இயற்பியல் - அளவீடுகள் & விசை", "வேதியியல் - அமிலங்கள் & காரங்கள்", "உயிரியல் - மனித உடலியங்கியல்"],
+        "Unit 2": ["தேசிய நிகழ்வுகள்", "தமிழ்நாடு நடப்பு நிகழ்வுகள்", "விருதுகள் & விளையாட்டுக்கள்"],
+        "Unit 3": ["அமைவிடம் & இயற்கை அமைவுகள்", "பருவமழை, மழைப்பொழிவு & காலநிலை", "ஆறுகள் & நீர் வளங்கள்"],
+        "Unit 4": ["சிந்துவெளி நாகரிகம்", "குப்தர்கள், டெல்லி சுல்தான்கள் & முகலாயர்கள்", "தென்னிந்திய வரலாறு & பண்பாடு"],
+        "Unit 5": ["இந்திய அரசியலமைப்பு - முகப்புரை", "அடிப்படை உரிமைகள் & கடமைகள்", "பஞ்சாயத்து ராஜ் & உள்ளாட்சி"],
+        "Unit 6": ["இந்திய பொருளாதாரத்தின் இயல்புகள்", "ஐந்தாண்டுத் திட்டங்கள் & நிதி ஆயோக்", "ஜிஎஸ்டி (GST) & வரி அமைப்பு"],
+        "Unit 7": ["தேசிய மறுமலர்ச்சி & தொடக்ககால எழுச்சிகள்", "இந்திய தேசிய காங்கிரஸ் & தலைவர்கள்", "தமிழ்நாட்டின் விடுதலைப் போராட்ட தலைவர்கள்"],
+        "Unit 8": ["சங்க காலம் முதல் தமிழ் இலக்கியம்", "விடுதலைப் போராட்டத்தில் தமிழ்நாட்டின் பங்கு", "சேர, சோழ, பாண்டியர் வரலாறு"],
+        "Unit 9": ["மனிதவள மேம்பாட்டுக் குறியீடுகள் (HDI)", "தமிழக அரசின் நலத்திட்டங்கள் & சமூக நீதி", "மின்-ஆளுமை (e-Governance)"],
+        "Unit 10": ["மீ.பொ.வ (HCF) & மீ.சி.ம (LCM)", "தனிவட்டி & கூட்டுவட்டி", "விகிதம் & சமவிகிதம்"]
+    };
+
     let questions = [];
     let currentQ = 0;
-    let score = 0;
+    let userAnswers = [];
+    let timerInterval;
+    let timeLeft = 30;
+    let currentTestMetaData = {};
 
-    function switchTab(tabId) {
-        document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-
-        document.getElementById(tabId).classList.add('active');
-        if(tabId === 'tab-create') document.getElementById('tab1-btn').classList.add('active');
-        if(tabId === 'tab-quiz') document.getElementById('tab2-btn').classList.add('active');
-        if(tabId === 'tab-result') document.getElementById('tab3-btn').classList.add('active');
+    function updateTopics() {
+        const sub = document.getElementById('subjectSelect').value;
+        const top = document.getElementById('topicSelect');
+        top.innerHTML = '';
+        (syllabus[sub] || []).forEach(t => {
+            let opt = document.createElement('option');
+            opt.value = t; opt.textContent = t;
+            top.appendChild(opt);
+        });
     }
 
-    function showModal(title, msg) {
+    function toggleKeySettings() {
+        const sec = document.getElementById('keySection');
+        sec.style.display = sec.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function saveApiKey() {
+        const key = document.getElementById('apiKeyInput').value.trim();
+        if(key) {
+            localStorage.setItem('gemini_api_key', key);
+            showModal("வெற்றி!", "API Key சேமிக்கப்பட்டது.");
+            toggleKeySettings();
+        } else {
+            showModal("பிழை", "செல்லுபடியாகும் API Key உள்ளிடவும்.");
+        }
+    }
+
+    function switchTab(tab) {
+        ['createTab', 'quizTab', 'resultTab', 'historyTab', 'weaknessTab', 'loadingCard'].forEach(id => document.getElementById(id).style.display = 'none');
+        document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+        if(tab === 'create') { document.getElementById('createTab').style.display = 'block'; document.getElementById('btn-tab-create').classList.add('active'); }
+        if(tab === 'history') { document.getElementById('historyTab').style.display = 'block'; document.getElementById('btn-tab-history').classList.add('active'); loadHistory(); }
+        if(tab === 'weakness') { document.getElementById('weaknessTab').style.display = 'block'; document.getElementById('btn-tab-weakness').classList.add('active'); loadWeakness(); }
+    }
+
+    async function generateQuestions(customSubject = null, customTopicName = null) {
+        const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('apiKeyInput').value.trim();
+        if(!apiKey) { 
+            showModal("API Key தேவை", "தயவுசெய்து API Key அமைப்புகளில் சாவி உள்ளிடவும்."); 
+            toggleKeySettings(); 
+            return; 
+        }
+
+        const exam = document.getElementById('examSelect').value;
+        const subject = customSubject || document.getElementById('subjectSelect').value;
+        const topic = customTopicName || document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
+        const count = customTopicName ? 10 : document.getElementById('questionCount').value;
+
+        currentTestMetaData = { exam, subject, topic, count };
+
+        document.getElementById('lblSubject').innerText = subject;
+        document.getElementById('lblTopic').innerText = topic;
+        document.getElementById('lblCount').innerText = `${count} வினாக்கள்`;
+
+        document.getElementById('createTab').style.display = 'none';
+        document.getElementById('weaknessTab').style.display = 'none';
+        document.getElementById('loadingStatusText').innerText = "AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...";
+        document.getElementById('loadingCard').style.display = 'flex';
+
+        const prompt = `TNPSC ${exam} - ${subject} (${topic}) தலைப்பில் ${count} வினாக்களை உருவாக்கவும். 
+        கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
+        [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]`;
+
+        let success = false;
+        let lastError = "";
+        let questionsData = null;
+        const modelsToTry = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
+
+        for (let modelName of modelsToTry) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ 
+                        contents: [{ parts: [{ text: prompt }] }],
+                        generationConfig: { responseMimeType: "application/json" }
+                    })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.candidates && data.candidates[0].content) {
+                    let text = data.candidates[0].content.parts[0].text;
+                    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+                    const firstBracket = text.indexOf('[');
+                    const lastBracket = text.lastIndexOf(']');
+                    
+                    if (firstBracket !== -1 && lastBracket !== -1) {
+                        text = text.substring(firstBracket, lastBracket + 1);
+                        questionsData = JSON.parse(text);
+                        success = true;
+                        break;
+                    }
+                } else if (data.error) {
+                    lastError = data.error.message;
+                }
+            } catch (e) {
+                lastError = e.message;
+            }
+        }
+
+        document.getElementById('loadingCard').style.display = 'none';
+
+        if (success && questionsData && questionsData.length > 0) {
+            questions = questionsData;
+            currentQ = 0;
+            userAnswers = [];
+            document.getElementById('quizTab').style.display = 'block';
+            showQuestion();
+        } else {
+            showModal("இணைப்புத் தோல்வி", lastError || "வினாக்களை உருவாக்க முடியவில்லை. API Key-ஐ சரிபார்க்கவும்.");
+            document.getElementById('createTab').style.display = 'block';
+        }
+    }
+
+    function showQuestion() {
+        clearInterval(timerInterval);
+        timeLeft = 30;
+        document.getElementById('timerText').innerText = `00:${timeLeft < 10 ? '0':''}${timeLeft}`;
+        
+        timerInterval = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timerText').innerText = `00:${timeLeft < 10 ? '0':''}${timeLeft}`;
+            if(timeLeft <= 0) { clearInterval(timerInterval); selectAnswer(-1); }
+        }, 1000);
+
+        const q = questions[currentQ];
+        document.getElementById('qProgress').innerText = `கேள்வி ${currentQ + 1}/${questions.length}`;
+        document.getElementById('questionText').innerText = `${currentQ + 1}. ${q.q}`;
+
+        const optDiv = document.getElementById('optionsContainer');
+        optDiv.innerHTML = '';
+        q.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => selectAnswer(idx);
+            optDiv.appendChild(btn);
+        });
+    }
+
+    function selectAnswer(idx) {
+        clearInterval(timerInterval);
+        userAnswers.push(idx);
+        currentQ++;
+        if(currentQ < questions.length) {
+            showQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function finishQuiz() {
+        document.getElementById('quizTab').style.display = 'none';
+        document.getElementById('resultTab').style.display = 'block';
+
+        let score = 0;
+        let wrongCount = 0;
+
+        questions.forEach((q, i) => {
+            if(userAnswers[i] === q.ans) score++;
+            else wrongCount++;
+        });
+
+        const subject = currentTestMetaData.subject;
+        const topic = currentTestMetaData.topic;
+        const date = new Date().toLocaleDateString('ta-IN');
+
+        // 1. பலவீனமான பகுதிகளை ஒரே தலைப்பாக சேமித்தல் (Unique Topic Consolidation)
+        if(wrongCount > 0) {
+            let weakMap = JSON.parse(localStorage.getItem('weak_topics_map') || "{}");
+            let key = `${subject}||${topic}`;
+            if(!weakMap[key]) {
+                weakMap[key] = { subject, topic, wrongCount: wrongCount, date };
+            } else {
+                weakMap[key].wrongCount += wrongCount;
+                weakMap[key].date = date;
+            }
+            localStorage.setItem('weak_topics_map', JSON.stringify(weakMap));
+        }
+
+        // 2. முழு தேர்வை Internal Storage-இல் சேமித்தல் (Save Full Test for Review)
+        let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
+        const testRecord = {
+            id: Date.now(),
+            date,
+            subject,
+            topic,
+            score,
+            total: questions.length,
+            questions: questions,
+            userAnswers: userAnswers
+        };
+        history.unshift(testRecord);
+        localStorage.setItem('full_test_history', JSON.stringify(history));
+
+        displayReviewUI(questions, userAnswers, score, questions.length);
+    }
+
+    function displayReviewUI(qList, uAnswers, score, total) {
+        document.getElementById('scoreText').innerText = `உங்கள் மதிப்பெண்: ${score} / ${total}`;
+        const reviewContainer = document.getElementById('reviewContainer');
+        reviewContainer.innerHTML = '';
+
+        qList.forEach((q, i) => {
+            const userAns = uAnswers[i];
+            const isCorrect = userAns === q.ans;
+
+            const div = document.createElement('div');
+            div.className = `q-review ${isCorrect ? 'correct-border' : 'wrong-border'}`;
+            div.innerHTML = `
+                <div><strong>Q${i+1}: ${q.q}</strong></div>
+                <div style="font-size:13px; margin-top:6px;">
+                    உங்கள் விடை: <span style="color:${isCorrect ? 'var(--success)' : 'var(--danger)'}; font-weight:bold;">${userAns >= 0 ? q.options[userAns] : 'நேரம் முடிந்தது'}</span><br>
+                    சரியான விடை: <span style="color:var(--success); font-weight:bold;">${q.options[q.ans]}</span>
+                </div>
+                <div class="explanation">💡 <strong>விளக்கம்:</strong> ${q.exp}</div>
+                <button class="btn-ai-explain" onclick="getAIExplanation(${i}, '${encodeURIComponent(q.q)}', '${encodeURIComponent(q.options[q.ans])}')">
+                    <i class="fa-solid fa-robot"></i> 🤖 மேலும் விரிவாக படிக்க AI விளக்கம்
+                </button>
+                <div id="aiExtra_${i}"></div>
+            `;
+            reviewContainer.appendChild(div);
+        });
+    }
+
+    async function getAIExplanation(index, encodedQ, encodedAns) {
+        const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('apiKeyInput').value.trim();
+        if(!apiKey) { showModal("API Key தேவை", "தயவுசெய்து API Key அமைப்புகளில் சாவி உள்ளிடவும்."); return; }
+
+        const q = decodeURIComponent(encodedQ);
+        const ans = decodeURIComponent(encodedAns);
+        const targetDiv = document.getElementById(`aiExtra_${index}`);
+        
+        targetDiv.innerHTML = `<div class="ai-extra-box"><i class="fa-solid fa-spinner fa-spin"></i> AI விரிவான விளக்கத்தை தயார் செய்கிறது...</div>`;
+
+        const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
+
+        const modelsToTry = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"];
+        let explanationText = "";
+
+        for (let modelName of modelsToTry) {
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+                });
+
+                const data = await res.json();
+                if (res.ok && data.candidates && data.candidates[0].content) {
+                    explanationText = data.candidates[0].content.parts[0].text;
+                    break;
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        if (explanationText) {
+            targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${explanationText.replace(/\n/g, '<br>')}</div>`;
+        } else {
+            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை. API Key அல்லது பிணைய இணைப்பை சரிபார்க்கவும்.</div>`;
+        }
+    }
+
+    function loadHistory() {
+        let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
+        const list = document.getElementById('historyList');
+        if(history.length === 0) { list.innerHTML = "வரலாறு எதுவுமில்லை."; return; }
+        
+        list.innerHTML = history.map((h) => `
+            <div style="background:#0f172a; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${h.subject} - ${h.topic}</strong>
+                    <span style="color:var(--accent); font-weight:bold;">${h.score}/${h.total}</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">தேதி: ${h.date}</div>
+                <button class="btn-sm" style="margin-top:8px; background:var(--accent); color:#000; font-weight:bold;" onclick="reviewSavedTest(${h.id})">
+                    <i class="fa-solid fa-eye"></i> இந்த தேர்வை மறுபரிசீலனை செய்
+                </button>
+            </div>
+        `).join('');
+    }
+
+    function reviewSavedTest(id) {
+        let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
+        let test = history.find(item => item.id === id);
+        if(test) {
+            switchTab('result');
+            document.getElementById('resultTab').style.display = 'block';
+            displayReviewUI(test.questions, test.userAnswers, test.score, test.total);
+        }
+    }
+
+    function loadWeakness() {
+        let weakMap = JSON.parse(localStorage.getItem('weak_topics_map') || "{}");
+        const list = document.getElementById('weaknessList');
+        let keys = Object.keys(weakMap);
+
+        if(keys.length === 0) { list.innerHTML = "சிறப்பு! பலவீனமான தலைப்புகள் எதுவும் இல்லை."; return; }
+
+        list.innerHTML = keys.map(k => {
+            let item = weakMap[k];
+            return `
+                <div style="background:#0f172a; padding:12px; margin-bottom:10px; border-radius:10px; border-left:4px solid var(--warning);">
+                    <div><strong>${item.subject}</strong></div>
+                    <div style="color:var(--text); font-size:14px; margin-top:2px;">${item.topic}</div>
+                    <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">
+                        மொத்த தவறான வினாக்கள்: <span style="color:var(--danger); font-weight:bold;">${item.wrongCount}</span> | கடைசி தேர்வு: ${item.date}
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    function showModal(title, desc) {
         document.getElementById('modalTitle').innerText = title;
-        document.getElementById('modalMessage').innerText = msg;
+        document.getElementById('modalDesc').innerText = desc;
         document.getElementById('customModal').style.display = 'flex';
     }
 
@@ -338,167 +583,11 @@
         document.getElementById('customModal').style.display = 'none';
     }
 
-    async function generateQuestions() {
-        const apiKey = document.getElementById('apiKeyInput').value.trim();
-        if(!apiKey) { showModal("API Key தேவை", "தயவுசெய்து உங்கள் Gemini API சாவியை உள்ளிடவும்."); return; }
-
-        const exam = document.getElementById('examSelect').value;
-        const subject = document.getElementById('subjectSelect').value;
-        const topic = document.getElementById('topicSelect').value.trim() || "பொதுவான தலைப்புகள்";
-        const count = document.getElementById('questionCount').value;
-
-        document.getElementById('tab-create').style.display = 'none';
-        document.getElementById('loadingCard').style.display = 'block';
-
-        const prompt = `TNPSC ${exam} பாடத்திட்டத்தின் அடிப்படையில் - ${subject} (${topic}) பாடத்திலிருந்து ${count} தரமான வினாக்களை உருவாக்கவும். 
-        கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
-        [
-          {
-            "q": "வினா உரை",
-            "options": ["விடை A", "விடை B", "விடை C", "விடை D"],
-            "ans": 0,
-            "exp": "இந்த வினாவிற்கான விரிவான விளக்கம்"
-          }
-        ]`;
-
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({
-                    contents: [{ parts: [{ text: prompt }] }],
-                    generationConfig: { responseMimeType: "application/json" }
-                })
-            });
-
-            const data = await response.json();
-            document.getElementById('loadingCard').style.display = 'none';
-
-            if(response.ok && data.candidates && data.candidates[0].content) {
-                let jsonText = data.candidates[0].content.parts[0].text;
-                questions = JSON.parse(jsonText);
-                currentQ = 0;
-                score = 0;
-                
-                document.getElementById('lblSubject').innerText = subject;
-                switchTab('tab-quiz');
-                showQuestion();
-            } else {
-                showModal("API பிழை", data.error ? data.error.message : "தரவைப் பெற முடியவில்லை.");
-                document.getElementById('tab-create').style.display = 'block';
-            }
-        } catch (e) {
-            document.getElementById('loadingCard').style.display = 'none';
-            showModal("பிழை", "நெட்வொர்க் பிழை அல்லது தவறான API Key: " + e.message);
-            document.getElementById('tab-create').style.display = 'block';
-        }
-    }
-
-    function showQuestion() {
-        if(currentQ >= questions.length) {
-            showResults();
-            return;
-        }
-
-        document.getElementById('lblProgress').innerText = `${currentQ + 1} / ${questions.length}`;
-        const q = questions[currentQ];
-
-        let html = `
-            <div class="q-card">
-                <h3>${currentQ + 1}. ${q.q}</h3>
-                <div style="margin-top:15px;">
-                    ${q.options.map((opt, i) => `
-                        <button class="option-btn" id="opt_${i}" onclick="checkAnswer(${i}, ${q.ans})">${opt}</button>
-                    `).join('')}
-                </div>
-                <div id="explanationArea"></div>
-            </div>
-        `;
-
-        document.getElementById('quizContainer').innerHTML = html;
-        document.getElementById('btnNext').style.display = 'none';
-    }
-
-    function checkAnswer(selected, correct) {
-        const btns = document.querySelectorAll('.option-btn');
-        btns.forEach(b => b.disabled = true);
-
-        if(selected === correct) {
-            document.getElementById(`opt_${selected}`).classList.add('correct');
-            score++;
-        } else {
-            document.getElementById(`opt_${selected}`).classList.add('wrong');
-            document.getElementById(`opt_${correct}`).classList.add('correct');
-        }
-
-        const expArea = document.getElementById('explanationArea');
-        const q = questions[currentQ];
-
-        expArea.innerHTML = `
-            <div class="explanation-box">
-                <strong>📖 விளக்கம்:</strong><br>${q.exp}
-            </div>
-            <div class="ai-ask-box">
-                <label><i class="fa-solid fa-robot"></i> AI-யிடம் கூடுதல் விளக்கம் கேட்க:</label>
-                <textarea id="aiAskInput" placeholder="உதாரணம்: இதைப் பற்றி இன்னும் விரிவாக விளக்கு..."></textarea>
-                <button class="btn-primary" style="padding:8px;" onclick="askAIExtra()">கேள்வி கேள்</button>
-                <div id="aiReplyBox" style="margin-top:10px; font-size:13px; color:#38bdf8;"></div>
-            </div>
-        `;
-
-        document.getElementById('btnNext').style.display = 'block';
-    }
-
-    async function askAIExtra() {
-        const query = document.getElementById('aiAskInput').value.trim();
-        const apiKey = document.getElementById('apiKeyInput').value.trim();
-        const replyBox = document.getElementById('aiReplyBox');
-
-        if(!query) return;
-        replyBox.innerText = "AI சிந்திக்கிறது...";
-
-        const currentQuestionText = questions[currentQ].q;
-        const prompt = `வினா: "${currentQuestionText}". பயனர் கேள்வி: "${query}". தயவுசெய்து சுருக்கமாகவும் எளிமையாகவும் விளக்கவும்.`;
-
-        try {
-            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-            const res = await fetch(url, {
-                method: 'POST',
-                headers: {'Content-Type': 'application/json'},
-                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-            });
-
-            const data = await res.json();
-            if(res.ok) {
-                replyBox.innerText = "💡 AI பதில்: " + data.candidates[0].content.parts[0].text;
-            } else {
-                replyBox.innerText = "மன்னிக்கவும், பதிலைப் பெற முடியவில்லை.";
-            }
-        } catch(e) {
-            replyBox.innerText = "பிழை ஏற்பட்டது.";
-        }
-    }
-
-    function nextQuestion() {
-        currentQ++;
-        showQuestion();
-    }
-
-    function showResults() {
-        switchTab('tab-result');
-        document.getElementById('scoreText').innerText = `${score} / ${questions.length}`;
-        
-        let msg = "";
-        const percentage = (score / questions.length) * 100;
-        if(percentage >= 80) msg = "அற்புதமான முயற்சி! நீங்கள் சிறந்த முறையில் தேர்ச்சி பெற்றுள்ளீர்கள்! 🎉";
-        else if(percentage >= 50) msg = "நல்ல முயற்சி! இன்னும் கொஞ்சம் பயிற்சி செய்தால் மேலும் அதிக மதிப்பெண் பெறலாம். 👍";
-        else msg = "மேலும் தீவிரமாகப் படிக்க வேண்டும். மீண்டும் முயற்சி செய்யுங்கள்! 💪";
-        
-        document.getElementById('scoreMessage').innerText = msg;
+    window.onload = function() {
+        updateTopics();
+        const savedKey = localStorage.getItem('gemini_api_key');
+        if(savedKey) document.getElementById('apiKeyInput').value = savedKey;
     }
 </script>
-
 </body>
 </html>

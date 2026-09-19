@@ -319,54 +319,45 @@
         கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]`;
 
-        let success = false;
-        let lastError = "";
-        let questionsData = null;
-        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro"];
+        try {
+            // இலவச API கணக்குகளுக்கு மிகவும் உறுதியாக வேலை செய்யக்கூடிய நிலையான gemini-1.5-flash மட்டுமே பயன்படுத்தப்படுகிறது
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { responseMimeType: "application/json" }
+                })
+            });
 
-        for (let modelName of modelsToTry) {
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                });
+            const data = await res.json();
+            document.getElementById('loadingCard').style.display = 'none';
 
-                const data = await res.json();
-                if (res.ok && data.candidates && data.candidates[0].content) {
-                    let text = data.candidates[0].content.parts[0].text;
-                    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-                    const firstBracket = text.indexOf('[');
-                    const lastBracket = text.lastIndexOf(']');
-                    
-                    if (firstBracket !== -1 && lastBracket !== -1) {
-                        text = text.substring(firstBracket, lastBracket + 1);
-                        questionsData = JSON.parse(text);
-                        success = true;
-                        break;
-                    }
-                } else if (data.error) {
-                    lastError = data.error.message;
+            if (res.ok && data.candidates && data.candidates[0].content) {
+                let text = data.candidates[0].content.parts[0].text;
+                text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+                const firstBracket = text.indexOf('[');
+                const lastBracket = text.lastIndexOf(']');
+                
+                if (firstBracket !== -1 && lastBracket !== -1) {
+                    text = text.substring(firstBracket, lastBracket + 1);
+                    questions = JSON.parse(text);
+                    currentQ = 0;
+                    userAnswers = [];
+                    document.getElementById('quizTab').style.display = 'block';
+                    showQuestion();
+                } else {
+                    showModal("பிழை", "தரவை சரியான JSON அமைப்பில் பெற முடியவில்லை.");
+                    document.getElementById('createTab').style.display = 'block';
                 }
-            } catch (e) {
-                lastError = e.message;
+            } else if (data.error) {
+                showModal("இணைப்புத் தோல்வி", data.error.message);
+                document.getElementById('createTab').style.display = 'block';
             }
-        }
-
-        document.getElementById('loadingCard').style.display = 'none';
-
-        if (success && questionsData && questionsData.length > 0) {
-            questions = questionsData;
-            currentQ = 0;
-            userAnswers = [];
-            document.getElementById('quizTab').style.display = 'block';
-            showQuestion();
-        } else {
-            showModal("இணைப்புத் தோல்வி", lastError || "வினாக்களை உருவாக்க முடியவில்லை. API Key-ஐ சரிபார்க்கவும்.");
+        } catch (e) {
+            document.getElementById('loadingCard').style.display = 'none';
+            showModal("பிழை", e.message || "வலைப்பின்னல் பிழை ஏற்பட்டது.");
             document.getElementById('createTab').style.display = 'block';
         }
     }
@@ -492,34 +483,22 @@
 
         const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
 
-        let success = false;
-        let lastError = "";
-        const modelsToTry = ["gemini-1.5-flash", "gemini-1.5-pro"];
-
-        for (let modelName of modelsToTry) {
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
-                const data = await res.json();
-                if(res.ok && data.candidates && data.candidates[0].content) {
-                    let text = data.candidates[0].content.parts[0].text;
-                    targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${text.replace(/\n/g, '<br>')}</div>`;
-                    success = true;
-                    break;
-                } else if(data.error) {
-                    lastError = data.error.message;
-                }
-            } catch(e) {
-                lastError = e.message;
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            if(res.ok && data.candidates && data.candidates[0].content) {
+                let text = data.candidates[0].content.parts[0].text;
+                targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${text.replace(/\n/g, '<br>')}</div>`;
+            } else if(data.error) {
+                targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை: ${data.error.message}</div>`;
             }
-        }
-
-        if(!success) {
-            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை: ${lastError || "பிழை ஏற்பட்டது"}</div>`;
+        } catch(e) {
+            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">பிழை ஏற்பட்டது: ${e.message}</div>`;
         }
     }
 

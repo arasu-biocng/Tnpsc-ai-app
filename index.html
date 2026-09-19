@@ -232,7 +232,6 @@
         <button class="btn-primary" onclick="closeModal()">சரி</button>
     </div>
 </div>
-
 <script>
     const syllabus = {
         "General Tamil": ["இலக்கணம் - பொருத்துதல், நூல் நூலாசிரியர்", "இலக்கியம் - திருக்குறள், எட்டுத்தொகை", "தமிழ் அறிஞர்களும் தமிழ்த்தொண்டும்"],
@@ -322,39 +321,36 @@
         let success = false;
         let lastError = "";
         let questionsData = null;
-        const modelsToTry = ["gemini-3.6-flash"];
+        const modelName = "gemini-3.6-flash";
 
-        for (let modelName of modelsToTry) {
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ 
-                        contents: [{ parts: [{ text: prompt }] }],
-                        generationConfig: { responseMimeType: "application/json" }
-                    })
-                });
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ 
+                    contents: [{ parts: [{ text: prompt }] }],
+                    generationConfig: { responseMimeType: "application/json" }
+                })
+            });
 
-                const data = await res.json();
-                if (res.ok && data.candidates && data.candidates[0].content) {
-                    let text = data.candidates[0].content.parts[0].text;
-                    text = text.replace(/```json/g, "").replace(/```/g, "").trim();
-                    const firstBracket = text.indexOf('[');
-                    const lastBracket = text.lastIndexOf(']');
-                    
-                    if (firstBracket !== -1 && lastBracket !== -1) {
-                        text = text.substring(firstBracket, lastBracket + 1);
-                        questionsData = JSON.parse(text);
-                        success = true;
-                        break;
-                    }
-                } else if (data.error) {
-                    lastError = data.error.message;
+            const data = await res.json();
+            if (res.ok && data.candidates && data.candidates[0].content) {
+                let text = data.candidates[0].content.parts[0].text;
+                text = text.replace(/```json/g, "").replace(/```/g, "").trim();
+                const firstBracket = text.indexOf('[');
+                const lastBracket = text.lastIndexOf(']');
+
+                if (firstBracket !== -1 && lastBracket !== -1) {
+                    text = text.substring(firstBracket, lastBracket + 1);
+                    questionsData = JSON.parse(text);
+                    success = true;
                 }
-            } catch (e) {
-                lastError = e.message;
+            } else if (data.error) {
+                lastError = data.error.message;
             }
+        } catch (e) {
+            lastError = e.message;
         }
 
         document.getElementById('loadingCard').style.display = 'none';
@@ -375,7 +371,7 @@
         clearInterval(timerInterval);
         timeLeft = 30;
         document.getElementById('timerText').innerText = `00:${timeLeft < 10 ? '0':''}${timeLeft}`;
-        
+
         timerInterval = setInterval(() => {
             timeLeft--;
             document.getElementById('timerText').innerText = `00:${timeLeft < 10 ? '0':''}${timeLeft}`;
@@ -424,7 +420,6 @@
         const topic = currentTestMetaData.topic;
         const date = new Date().toLocaleDateString('ta-IN');
 
-        // 1. பலவீனமான பகுதிகளை ஒரே தலைப்பாக சேமித்தல் (Unique Topic Consolidation)
         if(wrongCount > 0) {
             let weakMap = JSON.parse(localStorage.getItem('weak_topics_map') || "{}");
             let key = `${subject}||${topic}`;
@@ -437,7 +432,6 @@
             localStorage.setItem('weak_topics_map', JSON.stringify(weakMap));
         }
 
-        // 2. முழு தேர்வை Internal Storage-இல் சேமித்தல் (Save Full Test for Review)
         let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
         const testRecord = {
             id: Date.now(),
@@ -473,7 +467,7 @@
                     சரியான விடை: <span style="color:var(--success); font-weight:bold;">${q.options[q.ans]}</span>
                 </div>
                 <div class="explanation">💡 <strong>விளக்கம்:</strong> ${q.exp}</div>
-                <button class="btn-ai-explain" onclick="getAIExplanation(${i}, '${encodeURIComponent(q.q)}', '${encodeURIComponent(q.options[q.ans])}')">
+                <button class="btn-ai-explain" onclick="getAIExplanation(${i})">
                     <i class="fa-solid fa-robot"></i> 🤖 மேலும் விரிவாக படிக்க AI விளக்கம்
                 </button>
                 <div id="aiExtra_${i}"></div>
@@ -482,44 +476,46 @@
         });
     }
 
-    async function getAIExplanation(index, encodedQ, encodedAns) {
+    async function getAIExplanation(index) {
         const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('apiKeyInput').value.trim();
         if(!apiKey) { showModal("API Key தேவை", "தயவுசெய்து API Key அமைப்புகளில் சாவி உள்ளிடவும்."); return; }
 
-        const q = decodeURIComponent(encodedQ);
-        const ans = decodeURIComponent(encodedAns);
+        const qObj = questions[index];
+        if(!qObj) return;
+
+        const q = qObj.q;
+        const ans = qObj.options[qObj.ans];
         const targetDiv = document.getElementById(`aiExtra_${index}`);
-        
+
         targetDiv.innerHTML = `<div class="ai-extra-box"><i class="fa-solid fa-spinner fa-spin"></i> AI விரிவான விளக்கத்தை தயார் செய்கிறது...</div>`;
 
         const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
 
-        const modelsToTry = ["gemini-3.6-flash"];
+        const modelName = "gemini-3.6-flash";
         let explanationText = "";
 
-        for (let modelName of modelsToTry) {
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-                });
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${modelName}:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
 
-                const data = await res.json();
-                if (res.ok && data.candidates && data.candidates[0].content) {
-                    explanationText = data.candidates[0].content.parts[0].text;
-                    break;
-                }
-            } catch (e) {
-                console.error(e);
+            const data = await res.json();
+            if (res.ok && data.candidates && data.candidates[0].content) {
+                explanationText = data.candidates[0].content.parts[0].text;
+            } else if (data.error) {
+                explanationText = `பிழை: ${data.error.message}`;
             }
+        } catch (e) {
+            explanationText = `பிழை: ${e.message}`;
         }
 
-        if (explanationText) {
+        if (explanationText && !explanationText.startsWith("பிழை:")) {
             targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${explanationText.replace(/\n/g, '<br>')}</div>`;
         } else {
-            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை. API Key அல்லது பிணைய இணைப்பை சரிபார்க்கவும்.</div>`;
+            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">${explanationText || "விளக்கம் பெற முடியவில்லை. API Key அல்லது பிணைய இணைப்பை சரிபார்க்கவும்."}</div>`;
         }
     }
 
@@ -527,7 +523,7 @@
         let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
         const list = document.getElementById('historyList');
         if(history.length === 0) { list.innerHTML = "வரலாறு எதுவுமில்லை."; return; }
-        
+
         list.innerHTML = history.map((h) => `
             <div style="background:#0f172a; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border);">
                 <div style="display:flex; justify-content:space-between;">
@@ -546,6 +542,7 @@
         let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
         let test = history.find(item => item.id === id);
         if(test) {
+            questions = test.questions;
             switchTab('result');
             document.getElementById('resultTab').style.display = 'block';
             displayReviewUI(test.questions, test.userAnswers, test.score, test.total);
@@ -589,5 +586,6 @@
         if(savedKey) document.getElementById('apiKeyInput').value = savedKey;
     }
 </script>
+
 </body>
 </html>

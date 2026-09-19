@@ -31,6 +31,7 @@
         
         .btn-sm { background: var(--border); color: var(--text); border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 12px; }
         .btn-primary { background: linear-gradient(90deg, #0284c7 0%, #38bdf8 100%); color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 700; width: 100%; cursor: pointer; font-size: 15px; box-shadow: 0 4px 15px var(--accent-glow); }
+        .btn-ai-explain { background: rgba(56, 189, 248, 0.15); color: var(--accent); border: 1px solid var(--accent); padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; margin-top: 8px; display: inline-flex; align-items: center; gap: 6px; }
 
         .card { background: var(--card-bg); border-radius: 14px; padding: 18px; border: 1px solid var(--border); }
         .form-group { margin-bottom: 12px; }
@@ -89,18 +90,17 @@
         }
 
         .loading-details-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-        .loading-details-row:last-child { margin-bottom: 0; }
 
         .quiz-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; font-weight: bold; border-bottom: 1px solid var(--border); padding-bottom: 10px; }
         .timer { color: var(--warning); font-size: 15px; }
         .option-btn { width: 100%; padding: 12px; text-align: left; background: #0f172a; border: 1px solid var(--border); color: var(--text); border-radius: 8px; margin-bottom: 8px; cursor: pointer; font-size: 14px; }
-        .option-btn:hover { border-color: var(--accent); background: rgba(56, 189, 248, 0.05); }
         
         .q-review { background: #0f172a; padding: 12px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--border); }
         .correct-border { border-left-color: var(--success); }
         .wrong-border { border-left-color: var(--danger); }
         .explanation { font-size: 13px; color: var(--text-sub); margin-top: 8px; background: rgba(255,255,255,0.03); padding: 8px; border-radius: 6px; }
-        
+        .ai-extra-box { font-size: 12px; color: var(--accent); background: rgba(56, 189, 248, 0.08); padding: 8px; border-radius: 6px; margin-top: 6px; border: 1px dashed var(--accent); }
+
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); display: none; justify-content: center; align-items: center; z-index: 100; padding: 20px; }
         .modal-box { background: #1e293b; border: 1px solid var(--border); border-radius: 16px; padding: 20px; max-width: 400px; width: 100%; text-align: center; }
     </style>
@@ -179,7 +179,7 @@
             <div class="brain-pulse-ring"></div>
             <i class="fa-solid fa-brain"></i>
         </div>
-        <div style="font-size:16px; font-weight:700; color:var(--text);">AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...</div>
+        <div style="font-size:16px; font-weight:700; color:var(--text);" id="loadingStatusText">AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...</div>
         
         <div class="loading-details">
             <div class="loading-details-row">
@@ -215,7 +215,7 @@
     </div>
 
     <div id="historyTab" class="card" style="display:none;">
-        <h3>நாள் வாரியான தேர்வு வரலாறு</h3>
+        <h3>தேர்வு வரலாறு (முந்தைய தேர்வுகள்)</h3>
         <div id="historyList" style="margin-top:12px; font-size:13px; color:var(--text-sub);">தரவுகள் இல்லை.</div>
     </div>
 
@@ -253,6 +253,7 @@
     let userAnswers = [];
     let timerInterval;
     let timeLeft = 30;
+    let currentTestMetaData = {};
 
     function updateTopics() {
         const sub = document.getElementById('subjectSelect').value;
@@ -290,7 +291,7 @@
         if(tab === 'weakness') { document.getElementById('weaknessTab').style.display = 'block'; document.getElementById('btn-tab-weakness').classList.add('active'); loadWeakness(); }
     }
 
-    async function generateQuestions() {
+    async function generateQuestions(customSubject = null, customTopicName = null) {
         const apiKey = localStorage.getItem('gemini_api_key') || document.getElementById('apiKeyInput').value.trim();
         if(!apiKey) { 
             showModal("API Key தேவை", "தயவுசெய்து API Key அமைப்புகளில் சாவி உள்ளிடவும்."); 
@@ -299,27 +300,29 @@
         }
 
         const exam = document.getElementById('examSelect').value;
-        const subject = document.getElementById('subjectSelect').value;
-        const topic = document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
-        const count = document.getElementById('questionCount').value;
+        const subject = customSubject || document.getElementById('subjectSelect').value;
+        const topic = customTopicName || document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
+        const count = customTopicName ? 10 : document.getElementById('questionCount').value;
+
+        currentTestMetaData = { exam, subject, topic, count };
 
         document.getElementById('lblSubject').innerText = subject;
         document.getElementById('lblTopic').innerText = topic;
         document.getElementById('lblCount').innerText = `${count} வினாக்கள்`;
 
         document.getElementById('createTab').style.display = 'none';
+        document.getElementById('weaknessTab').style.display = 'none';
+        document.getElementById('loadingStatusText').innerText = "AI வினாக்களை உருவாக்கி கொண்டிருக்கிறது...";
         document.getElementById('loadingCard').style.display = 'flex';
 
         const prompt = `TNPSC ${exam} - ${subject} (${topic}) தலைப்பில் ${count} வினாக்களை உருவாக்கவும். 
-        கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும், வேறு எந்த வார்த்தைகளும் இருக்கக் கூடாது:
+        கண்டிப்பாக கீழ்க்கண்ட JSON Array வடிவில் மட்டுமே பதிலளிக்கவும்:
         [{"q": "வினா உரை", "options": ["A விடை", "B விடை", "C விடை", "D விடை"], "ans": 0, "exp": "விரிவான விளக்கம்"}]`;
 
         let success = false;
         let lastError = "";
         let questionsData = null;
-
-        // Updated model fallback list for v1beta endpoint
-        const modelsToTry = ["gemini-3.7-flash", "gemini-3.5-flash", "gemini-2.5-flash"];
+        const modelsToTry = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-3.5-flash"];
 
         for (let modelName of modelsToTry) {
             try {
@@ -336,8 +339,6 @@
                 const data = await res.json();
                 if (res.ok && data.candidates && data.candidates[0].content) {
                     let text = data.candidates[0].content.parts[0].text;
-                    
-                    // Clean text to extract pure JSON safely
                     text = text.replace(/```json/g, "").replace(/```/g, "").trim();
                     const firstBracket = text.indexOf('[');
                     const lastBracket = text.lastIndexOf(']');
@@ -412,18 +413,56 @@
         document.getElementById('resultTab').style.display = 'block';
 
         let score = 0;
+        let wrongCount = 0;
+
+        questions.forEach((q, i) => {
+            if(userAnswers[i] === q.ans) score++;
+            else wrongCount++;
+        });
+
+        const subject = currentTestMetaData.subject;
+        const topic = currentTestMetaData.topic;
+        const date = new Date().toLocaleDateString('ta-IN');
+
+        // 1. பலவீனமான பகுதிகளை ஒரே தலைப்பாக சேமித்தல் (Unique Topic Only)
+        if(wrongCount > 0) {
+            let weakMap = JSON.parse(localStorage.getItem('weak_topics_map') || "{}");
+            let key = `${subject}||${topic}`;
+            if(!weakMap[key]) {
+                weakMap[key] = { subject, topic, wrongCount: wrongCount, date };
+            } else {
+                weakMap[key].wrongCount += wrongCount;
+                weakMap[key].date = date;
+            }
+            localStorage.setItem('weak_topics_map', JSON.stringify(weakMap));
+        }
+
+        // 2. முழு தேர்வை Internal Storage-இல் சேமித்தல் (Save Full Test for Review)
+        let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
+        const testRecord = {
+            id: Date.now(),
+            date,
+            subject,
+            topic,
+            score,
+            total: questions.length,
+            questions: questions,
+            userAnswers: userAnswers
+        };
+        history.unshift(testRecord);
+        localStorage.setItem('full_test_history', JSON.stringify(history));
+
+        displayReviewUI(questions, userAnswers, score, questions.length);
+    }
+
+    function displayReviewUI(qList, uAnswers, score, total) {
+        document.getElementById('scoreText').innerText = `உங்கள் மதிப்பெண்: ${score} / ${total}`;
         const reviewContainer = document.getElementById('reviewContainer');
         reviewContainer.innerHTML = '';
 
-        const subject = document.getElementById('subjectSelect').value;
-        const topic = document.getElementById('customTopic').value.trim() || document.getElementById('topicSelect').value;
-        let wrongTopics = JSON.parse(localStorage.getItem('weak_topics') || "[]");
-
-        questions.forEach((q, i) => {
-            const userAns = userAnswers[i];
+        qList.forEach((q, i) => {
+            const userAns = uAnswers[i];
             const isCorrect = userAns === q.ans;
-            if(isCorrect) score++;
-            else wrongTopics.push({subject, topic, date: new Date().toLocaleDateString('ta-IN')});
 
             const div = document.createElement('div');
             div.className = `q-review ${isCorrect ? 'correct-border' : 'wrong-border'}`;
@@ -434,40 +473,94 @@
                     சரியான விடை: <span style="color:var(--success); font-weight:bold;">${q.options[q.ans]}</span>
                 </div>
                 <div class="explanation">💡 <strong>விளக்கம்:</strong> ${q.exp}</div>
+                <button class="btn-ai-explain" onclick="getAIExplanation(${i}, '${encodeURIComponent(q.q)}', '${encodeURIComponent(q.options[q.ans])}')">
+                    <i class="fa-solid fa-robot"></i> 🤖 மேலும் விரிவாக படிக்க AI விளக்கம்
+                </button>
+                <div id="aiExtra_${i}"></div>
             `;
             reviewContainer.appendChild(div);
         });
+    }
 
-        document.getElementById('scoreText').innerText = `உங்கள் மதிப்பெண்: ${score} / ${questions.length}`;
+    async function getAIExplanation(index, encodedQ, encodedAns) {
+        const apiKey = localStorage.getItem('gemini_api_key');
+        if(!apiKey) { showModal("API Key தேவை", "தயவுசெய்து API Key அமைப்புகளில் சாவி உள்ளிடவும்."); return; }
 
-        let history = JSON.parse(localStorage.getItem('test_history') || "[]");
-        history.unshift({ date: new Date().toLocaleDateString('ta-IN'), subject, topic, score, total: questions.length });
-        localStorage.setItem('test_history', JSON.stringify(history));
-        localStorage.setItem('weak_topics', JSON.stringify(wrongTopics));
+        const q = decodeURIComponent(encodedQ);
+        const ans = decodeURIComponent(encodedAns);
+        const targetDiv = document.getElementById(`aiExtra_${index}`);
+        
+        targetDiv.innerHTML = `<div class="ai-extra-box"><i class="fa-solid fa-spinner fa-spin"></i> AI விரிவான விளக்கத்தை தயார் செய்கிறது...</div>`;
+
+        const prompt = `வினா: "${q}"\nசரியான விடை: "${ans}"\n\nஇந்த வினா மற்றும் விடைக்கு TNPSC தேர்வுக்கு பயன்படும் வகையில் விரிவான மற்றும் கூடுதல் தகவல்கள் அடங்கிய விளக்கத்தை தமிழில் எளிமையாக அளிக்கவும்.`;
+
+        try {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+            });
+            const data = await res.json();
+            if(data.candidates && data.candidates[0].content) {
+                let text = data.candidates[0].content.parts[0].text;
+                targetDiv.innerHTML = `<div class="ai-extra-box"><strong>📖 AI விரிவான விளக்கம்:</strong><br>${text.replace(/\n/g, '<br>')}</div>`;
+            } else {
+                targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">விளக்கம் பெற முடியவில்லை.</div>`;
+            }
+        } catch(e) {
+            targetDiv.innerHTML = `<div class="ai-extra-box" style="color:var(--danger)">பிழை ஏற்பட்டது. மீண்டும் முயற்சிக்கவும்.</div>`;
+        }
     }
 
     function loadHistory() {
-        let history = JSON.parse(localStorage.getItem('test_history') || "[]");
+        let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
         const list = document.getElementById('historyList');
         if(history.length === 0) { list.innerHTML = "வரலாறு எதுவுமில்லை."; return; }
-        list.innerHTML = history.map(h => `
-            <div style="background:#0f172a; padding:10px; margin-bottom:8px; border-radius:8px; border:1px solid var(--border);">
-                <div><strong>${h.subject} - ${h.topic}</strong></div>
-                <div style="margin-top:4px;">தேதி: ${h.date} | மதிப்பெண்: <span style="color:var(--accent); font-weight:bold;">${h.score}/${h.total}</span></div>
+        
+        list.innerHTML = history.map((h) => `
+            <div style="background:#0f172a; padding:12px; margin-bottom:10px; border-radius:10px; border:1px solid var(--border);">
+                <div style="display:flex; justify-content:space-between;">
+                    <strong>${h.subject} - ${h.topic}</strong>
+                    <span style="color:var(--accent); font-weight:bold;">${h.score}/${h.total}</span>
+                </div>
+                <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">தேதி: ${h.date}</div>
+                <button class="btn-sm" style="margin-top:8px; background:var(--accent); color:#000; font-weight:bold;" onclick="reviewSavedTest(${h.id})">
+                    <i class="fa-solid fa-eye"></i> இந்த தேர்வை மறுபரிசீலனை செய்
+                </button>
             </div>
         `).join('');
     }
 
+    function reviewSavedTest(id) {
+        let history = JSON.parse(localStorage.getItem('full_test_history') || "[]");
+        let test = history.find(item => item.id === id);
+        if(test) {
+            switchTab('result');
+            document.getElementById('resultTab').style.display = 'block';
+            displayReviewUI(test.questions, test.userAnswers, test.score, test.total);
+        }
+    }
+
     function loadWeakness() {
-        let wrongTopics = JSON.parse(localStorage.getItem('weak_topics') || "[]");
+        let weakMap = JSON.parse(localStorage.getItem('weak_topics_map') || "{}");
         const list = document.getElementById('weaknessList');
-        if(wrongTopics.length === 0) { list.innerHTML = "சிறப்பு! பலவீனமான தலைப்புகள் எதுவும் இல்லை."; return; }
-        list.innerHTML = wrongTopics.map(w => `
-            <div style="background:#0f172a; padding:10px; margin-bottom:8px; border-radius:8px; border-left:3px solid var(--warning);">
-                <div><strong>${w.subject}</strong> - ${w.topic}</div>
-                <div style="font-size:11px; color:var(--text-sub); margin-top:2px;">தேதி: ${w.date}</div>
-            </div>
-        `).join('');
+        let keys = Object.keys(weakMap);
+
+        if(keys.length === 0) { list.innerHTML = "சிறப்பு! பலவீனமான தலைப்புகள் எதுவும் இல்லை."; return; }
+
+        list.innerHTML = keys.map(k => {
+            let item = weakMap[k];
+            return `
+                <div style="background:#0f172a; padding:12px; margin-bottom:10px; border-radius:10px; border-left:4px solid var(--warning);">
+                    <div><strong>${item.subject}</strong></div>
+                    <div style="color:var(--text); font-size:14px; margin-top:2px;">${item.topic}</div>
+                    <div style="font-size:11px; color:var(--text-sub); margin-top:4px;">
+                        மொத்த தவறான வினாக்கள்: <span style="color:var(--danger); font-weight:bold;">${item.wrongCount}</span> | கடைசி தேர்வு: ${item.date}
+                    </div>
+                </div>
+            `;
+        }).join('');
     }
 
     function showModal(title, desc) {
